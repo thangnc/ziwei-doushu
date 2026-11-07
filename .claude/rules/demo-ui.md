@@ -15,6 +15,6 @@ paths:
 - The UI is bilingual: Vietnamese (default) and Chinese, with the language chosen by the `ziwei-locale` cookie (`apps/web/lib/i18n/`). **Put new or changed UI strings in `apps/web/lib/i18n/messages/zh.ts` and `vi.ts`**, not hard-coded. Use `useT()` in client components and `getT()` on the server.
   - Vietnamese follows `apps/web/lib/i18n/README.md`: Hán-Việt only for specialist terms marked Verified in `docs/audits/terminology-audit.md`; natural Vietnamese for ordinary UI; no Disputed terms (`docs/decisions/localization.md` D-1).
   - Pages not localized yet still have hard-coded Chinese. Localize them in their planned phase, not while working on something else.
-  - Never translate engine identifiers. Chart terms are localized only for display.
+  - Never translate engine identifiers. Chart terms are localized only for display, through `apps/web/lib/i18n/terms.ts` (`presentTerm`, `ganzhiText`, `presentChart`); never hard-code a Vietnamese star or palace name in a component. Disputed and Unverified chart terms show their Hán-Việt reading marked as provisional (`docs/decisions/localization.md` D-9).
 - The layout must keep working on narrow screens (the chart grid stacks below `lg`, see #35). Check mobile width when changing the layout.
 - When the user asks to check a UI change, run `npm run dev` and look at `/chart` (and `/heming` if you touched it) in the browser. Type-checking alone doesn't prove the UI works.

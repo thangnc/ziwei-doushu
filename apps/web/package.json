@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "tsx test/birthform-birthinfo-consistency.test.ts && tsx test/heming-refresh.test.ts && tsx test/heming-stream.test.ts && tsx test/i18n-messages-parity.test.ts && tsx test/i18n-locale-resolution.test.ts"
+    "test": "tsx test/birthform-birthinfo-consistency.test.ts && tsx test/heming-refresh.test.ts && tsx test/heming-stream.test.ts && tsx test/i18n-messages-parity.test.ts && tsx test/i18n-locale-resolution.test.ts && tsx test/i18n-terms-coverage.test.ts && tsx test/vi-presentation-baseline.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

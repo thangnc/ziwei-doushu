@@ -210,6 +210,8 @@ Charts per school × leap policy (all sets):
 
 ### 2.6 Errors during the sweep (an engine finding, not changed in Phase 0)
 
+> **Fixed 2026-11-07** (decision D-8): see `docs/solutions/engine/origin-month-must-not-round-trip-a-leap-day-through-iztro-bylunar.md`. The text below is the original Phase 0 finding.
+
 - `leap-month 2017-8-21 leapMonth=origin-month: only 29 days in lunar year 2017 month 6` — 96 charts
 
 2017-08-21 is 农历 2017 闰六月三十. Under `origin-month` the engine keeps the leap flag and calls `astro.byLunar('2017-6-30', …, isLeapMonth=true)` (algorithm.ts:486-496). iztro rejects day 30, apparently checking the length of the regular sixth month (29 days), so `generateChart` throws for every hour, gender and school. The clamp at algorithm.ts:188-193 does not prevent this because lunar-javascript reports 30 days for 闰六月. The other three policies chart this date normally. You can reproduce it with `npx tsx .claude/skills/chart/chart.ts --date 2017-08-21 --hour 3 --gender male --leap origin-month`.

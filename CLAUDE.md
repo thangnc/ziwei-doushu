@@ -39,7 +39,7 @@ Read the doc for the area before changing it. `docs/README.md` indexes everythin
 
 | Area | Read first | Check |
 |---|---|---|
-| Engine (`lib/ziwei/`) | `docs/architecture/time-model.md` (birth time), `docs/architecture/engine-protection.md` (imports, bundle, privacy), `docs/solutions/` categories `engine` and `time` (none recorded yet) | `chart-diff-reviewer`, `npm test` |
+| Engine (`lib/ziwei/`) | `docs/architecture/time-model.md` (birth time), `docs/architecture/engine-protection.md` (imports, bundle, privacy), `docs/solutions/engine/`, `docs/solutions/` category `time` (none recorded yet) | `chart-diff-reviewer`, `npm test` |
 | Baselines | `scripts/regression/fixtures/README.md`, `docs/solutions/baselines/` | `npm test` (3 baseline bodies) |
 | i18n and UI | `lib/i18n/README.md`, `docs/decisions/localization.md`, `docs/audits/terminology-audit.md`, `docs/audits/ui-inventory.md` | `npm run build` |
 | CI, git, worktrees, hooks | `docs/solutions/ci/`, `docs/solutions/workflow/` | `node .github/scripts/check-repo-guards.mjs` |

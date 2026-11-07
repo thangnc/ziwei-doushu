@@ -483,8 +483,19 @@ export function generateChart(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let astrolabe: any;
 
-  if (leapMode !== 'split' && effectiveLunar.rawLunarMonth < 0) {
-      // 闰月生人 → 按用户选项切换月份归属
+  if (leapMode === 'origin-month' && effectiveLunar.rawLunarMonth < 0) {
+    // ★ 2026-11-07 fix (D-8): origin-month keeps the birth's own leap-month date, so the old
+    // byLunar call only converted that date back to the same solar date and then ran bySolar with
+    // fixLeap=false. That round trip crashed on day 30 of a 30-day leap month whose regular month
+    // has 29 days (e.g. 2017-08-21 = 2017 闰六月三十: "only 29 days in lunar year 2017 month 6"),
+    // because lunar-lite 0.2.8 lunar2solar builds the regular-month date before switching to the
+    // leap month. Calling bySolar directly is the policy's own definition (school-config.ts:
+    // 不调整，iztro fixLeap=false). Source: on every other leap-month day 1900–2100 (2,149 days,
+    // 8,596 charts) both paths give identical astrolabes; the 17 crashing dates now chart.
+    // See docs/solutions/engine/origin-month-must-not-round-trip-a-leap-day-through-iztro-bylunar.md.
+    astrolabe = astro.bySolar(`${year}-${month}-${day}`, hour, iztroGender, false, 'zh-CN');
+  } else if (leapMode !== 'split' && effectiveLunar.rawLunarMonth < 0) {
+      // 闰月生人 → 按用户选项切换月份归属（next-month / prev-month：换到另一个普通月，需 byLunar 换算）
       const lunarDateStr = `${effectiveLunar.lunarYear}-${effectiveLunar.lunarMonth}-${effectiveLunar.lunarDay}`;
       astrolabe = astro.byLunar(
         lunarDateStr,

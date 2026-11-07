@@ -6,23 +6,56 @@ on:
   pull_request:
   workflow_dispatch:
 
+# A superseded PR run owes nobody a verdict, so a new push to the same PR cancels it.
+# Pushes to main and manual runs get a group of one (`github.run_id`) and are never cancelled.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+# Every job that runs Node uses the canonical environment: identical to the one the baseline
+# fixtures are generated in (Node 24.22.2 / npm 11.19.1, linux/amd64; ICU and tzdata are recorded
+# in the fixture metadata). Pinned by digest so a floating '24' can't drift to a new patch with
+# different ICU / tzdata. Versions and the procedure for changing them:
+# scripts/regression/fixtures/README.md. `.nvmrc` matches for local development, and the
+# `guards` job fails if the two ever disagree.
+# Actions are pinned to commit SHAs; Dependabot (github-actions) proposes the bumps.
+
 jobs:
-  check:
-    name: Typecheck + chart regression
+  guards:
+    name: Repository guards
     runs-on: ubuntu-latest
-    # Canonical environment: identical to the one the baseline fixtures are generated in
-    # (Node 24.22.2 / npm 11.19.1, linux/amd64; ICU and tzdata are recorded in the fixture metadata).
-    # Pinned by digest so a floating node-version '24' can't drift to a new patch with different ICU / tzdata.
-    # Versions and the procedure for changing them: scripts/regression/fixtures/README.md. .nvmrc matches for local development.
+    timeout-minutes: 5
     container:
       image: node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
-      # The container runs as root but the checked-out workspace belongs to the runner user, so git reports
-      # "dubious ownership". The neutral-naming test calls git ls-files, so mark the workspace as safe.
-      - name: Mark workspace as a git safe directory
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      # No install needed: Node standard library only.
+      - name: Regression tests registered, Node versions consistent
+        run: node .github/scripts/check-repo-guards.mjs
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Cache npm downloads
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24.22.2-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-node24.22.2-
 
       # package-lock.json is committed: install the locked versions.
       - name: Install dependencies
@@ -31,8 +64,97 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+  test:
+    name: Chart regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # The container runs as root but the checked-out workspace belongs to the runner user, so git
+      # reports "dubious ownership". The neutral-naming test calls git ls-files, so mark the
+      # workspace as safe.
+      - name: Mark workspace as a git safe directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Cache npm downloads
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24.22.2-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-node24.22.2-
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # Unit regressions plus the engine / patterns / birth-time baseline fixtures.
       - name: Chart engine regression
         run: npm test
 
+  build:
+    name: Build and smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Needed for the clean-tree check below (see the same step in the test job).
+      - name: Mark workspace as a git safe directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Cache npm downloads
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-node24.22.2-${{ hashFiles('package-lock.json') }}
+          restore-keys: npm-${{ runner.os }}-node24.22.2-
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
       - name: Build
         run: npm run build
+
+      # Next rewrites next-env.d.ts and tsconfig.json when they don't match what it expects, and
+      # npm ci would rewrite a lockfile that is out of sync with package.json. Either means a
+      # committed file is stale, so fail and show the diff instead of passing on a dirty tree.
+      - name: Working tree is clean after build
+        run: |
+          if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
+            echo "::error::The install or build changed tracked files or left untracked files. Commit the regenerated versions or fix their source."
+            git status --porcelain --untracked-files=all
+            git --no-pager diff
+            exit 1
+          fi
+
+      # Starts `next start`, expects 200 from every top-level page and 404 from the /api/* routes
+      # the open-source version deliberately leaves out.
+      - name: Smoke test the production server
+        run: node .github/scripts/smoke-routes.mjs
+
+  # One stable check name for the branch ruleset to require, so adding or renaming a job above
+  # never needs a ruleset change. Fails unless every job it depends on succeeded.
+  ci-ok:
+    name: CI result
+    if: always()
+    needs: [guards, typecheck, test, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: All CI jobs succeeded
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          if echo "$NEEDS" | jq -e 'to_entries | any(.value.result != "success")' > /dev/null; then
+            echo "::error::At least one CI job did not succeed."
+            exit 1
+          fi

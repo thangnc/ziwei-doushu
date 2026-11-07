@@ -1,0 +1,37 @@
+name: PR title
+
+# PRs are merged with a merge commit, and the PR title becomes the subject GitHub suggests, so it
+# follows the same Conventional Commits style as the commits (.claude/rules/workflow.md → Git).
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+concurrency:
+  group: pr-title-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  conventional-title:
+    name: Conventional Commits title
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      # The title is untrusted input: pass it through env and never interpolate it into the script.
+      - name: Check the PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([^)]+\))?!?: .+'
+          printf 'PR title: %s\n' "$PR_TITLE"
+          if printf '%s' "$PR_TITLE" | grep -Eq "$pattern"; then
+            echo "The title follows Conventional Commits."
+            exit 0
+          fi
+          echo "::error::The PR title must follow Conventional Commits: <type>(<optional scope>): <subject>"
+          echo "Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+          echo "Example: fix(engine): reject an unknown leap-month policy instead of charting it as split"
+          exit 1

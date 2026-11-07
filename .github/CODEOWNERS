@@ -1,0 +1,20 @@
+# Paths where a change needs a maintainer's eyes even when every check is green.
+# GitHub skips the review request when the code owner is the PR author, so this fires only when
+# someone else opens a PR that touches these paths. Reviews are not required by the ruleset;
+# this makes sure the request is made.
+
+# CI, templates and these rules. A change here can weaken the checks that police every other PR.
+/.github/ @thangnc
+
+# Baseline fixtures are change detectors for the whole engine. Regenerating them hides any
+# chart-output change, so it needs the evidence in scripts/regression/fixtures/README.md.
+/scripts/regression/fixtures/ @thangnc
+
+# Generated brightness tables (勿手改); the generator is not in this repo.
+/lib/ziwei/school-tables.generated.ts @thangnc
+
+# Quoted 倪师 text under its own licence (CC BY-NC-SA 4.0); quotations must stay exact.
+/docs/tianji-ziwei/ @thangnc
+
+# The locked dependency tree. iztro or lunar-javascript bumps can change chart output.
+/package-lock.json @thangnc

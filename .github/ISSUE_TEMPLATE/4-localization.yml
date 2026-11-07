@@ -1,0 +1,66 @@
+name: Localization / 翻译与本地化
+description: A wrong, missing or inconsistent translation, or text that breaks the layout
+labels: ["localization"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The UI is localized in Vietnamese and Chinese. Chart terms follow the agreed terminology in `lib/i18n/TERMINOLOGY_AUDIT.md` and `lib/i18n/DECISIONS.md`; please check those before proposing a different term.
+        Quoted classical and 倪师 text stays verbatim in Chinese and isn't translated.
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you start
+      options:
+        - label: I searched existing issues and this hasn't been reported.
+          required: true
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Locale
+      options:
+        - Tiếng Việt (vi)
+        - 中文 (zh)
+        - Both
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of problem
+      options:
+        - Wrong or awkward translation
+        - Missing translation (text shown in the wrong language)
+        - Chart term inconsistent with the terminology docs
+        - Text overflows or breaks the layout
+        - Date, number or name formatting
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page or component
+      placeholder: "e.g. /chart, the palace detail panel"
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current text
+    validations:
+      required: true
+  - type: textarea
+    id: suggested
+    attributes:
+      label: Suggested text
+  - type: textarea
+    id: reference
+    attributes:
+      label: Reference
+      description: Why the suggested text is better, e.g. a terminology entry, a published Vietnamese source or common usage.
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Especially for layout problems. Please don't include anyone's birth data.

@@ -18,12 +18,12 @@ Rules: `.claude/rules/workflow.md` (Verify, Scope, Worktrees, Git, Privacy). Run
    - Work out `<type>` and `<slug>` from the worktree name (`<type>-<slug>`), or ask the user.
 2. **Verify, and report the real output:**
    - `npm run typecheck` and `npm test`. All three baseline bodies must match. A body mismatch means stop and investigate; never regenerate fixtures.
-   - `npm run build` if anything under `app/`, `components/` or `next.config.*` changed. Afterwards restore `next-env.d.ts` and `tsconfig.json` with `git checkout --`.
+   - `npm run build` if anything under `app/`, `components/` or `next.config.*` changed. Afterwards `git status` must show no change to `next-env.d.ts` or `tsconfig.json`; if it does, CI's clean-tree step will fail too (see CLAUDE.md).
    - If `lib/ziwei/` changed, run the `chart-diff-reviewer` agent and include what changed.
    - For UI changes, say whether you looked at the page in a browser.
 3. **Review the diff.**
    - Look at `git status --short` and `git diff`.
-   - Exclude the generated `next-env.d.ts` / `tsconfig.json` edits, `.env*` files, secrets and any real person's birth data.
+   - Exclude the `next dev` edit to `next-env.d.ts`, `.env*` files, secrets and any real person's birth data.
    - It must be one change; split anything unrelated out and mention it.
 4. **Commit.**
    - Stage explicit paths, not `git add -A`.
@@ -41,7 +41,12 @@ Rules: `.claude/rules/workflow.md` (Verify, Scope, Worktrees, Git, Privacy). Run
    - End the body with the PR attribution lines this session uses.
 7. **Watch CI** until the runs for the head commit complete. Report each job.
    - First wait until `gh run list --repo thangnc/ziwei-doushu --commit <full sha>` lists a run; `gh pr checks --watch` exits early with "no checks reported" if it starts too soon.
-   - There is one job, "Typecheck + chart regression" (Node 24 container). It must pass before merging.
+   - Workflows:
+     - **CI** has four jobs, all in the Node 24 container: Repository guards, Typecheck, Chart regression, and Build and smoke test. They're summed up by **CI result**, which must pass before merging.
+     - **Security**: Dependency review (PRs only) and npm audit (production).
+     - **CodeQL**: actions and javascript-typescript.
+     - **PR title**: Conventional Commits.
+   - Report every job; all of them should be green before merging.
    - On a failure, read the failed log (`gh run view <id> --repo thangnc/ziwei-doushu --log-failed`) and fix it in this worktree.
 8. **Stop and report.** Give the PR link and the CI result.
    - Don't merge unless the user asks.

@@ -7,11 +7,12 @@ Questions, fixes and suggestions are welcome. Two things up front will save a lo
 
 ## Asking questions
 
-- **How to use it, or general discussion**: use [Discussions](https://github.com/Renhuai123/ziwei-doushu/discussions).
+- **How to use it**: start with the [README](./README.md). If it doesn't answer your question, open an issue with the "Other" form.
 - **You think a chart is wrong**: use the "Chart result question" form. Include the Gregorian birth date, the time to the minute, the birthplace or longitude, the gender, this project's result and the result you compared it with. A bare "it's inaccurate" can't be investigated.
   - Supporting-star brightness, leap-month assignment and whether the late 子时 changes the day differ between schools by design, and the engine makes them switchable options. Such differences aren't bugs, but pointing them out is still welcome.
 - **Errors or broken pages**: use the "Bug report" form, with steps to reproduce and the error message.
-- **Problems with the live site (ouranic.cn)**: use the "ouranic.cn issue" form.
+- **A wrong, missing or inconsistent translation** in the Vietnamese or Chinese UI: use the "Localization" form.
+- **Problems with the live site (ouranic.cn)**: the site belongs to the upstream project, so report them at [Renhuai123/ziwei-doushu](https://github.com/Renhuai123/ziwei-doushu/issues).
 
 Please don't post phone numbers, verification codes, or anyone else's birth data without their consent.
 
@@ -25,7 +26,16 @@ npm test             # chart regression tests
 
 - One change per PR. Say what changed and why in the description.
 - **If it changes chart results**: attach evidence (a cited source, or a screenshot from other charting software), and add a regression test under `scripts/regression/`, registered in the `test` script in `package.json`. Changes to a convention without a source are generally not accepted.
-- CI runs the same checks on every push and PR, on Node 24 (see `.nvmrc`).
+- CI runs on every push and PR, in the Node 24.22.2 container the baseline fixtures are generated in (see `.nvmrc`):
+  - **CI**:
+    - repository guards: every `scripts/regression/*.test.ts` is registered in `npm test`, and the Node versions agree;
+    - typecheck;
+    - chart regression (`npm test`);
+    - build and smoke test: the build must leave the working tree clean, `next start` must serve every page, and the `/api/*` routes must return 404.
+    - The **CI result** check sums these up.
+  - **Security**: dependency review on PRs, and `npm audit` of the production dependencies.
+  - **CodeQL**: static analysis of the app and the workflows.
+  - **PR title**: the title must follow Conventional Commits, e.g. `fix(engine): …`.
 - New comments, docs and commit messages are written in English. Chart terms that are engine identifiers (四化, 大限, 时辰, star and palace names) stay in Chinese. Don't translate existing Chinese comments as part of an unrelated change.
 
 ## License

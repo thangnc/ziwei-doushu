@@ -93,7 +93,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
   return (
     <div className="flex flex-col h-full rounded-xl overflow-hidden card-glass">
       {/* 标题 */}
-      <div className="px-4 py-3 flex-shrink-0" style={{ borderBottom: '1px solid var(--t-border)' }}>
+      <div className="px-4 py-3 shrink-0" style={{ borderBottom: '1px solid var(--t-border)' }}>
         <h3 className="text-xs font-medium tracking-widest" style={{ color: 'var(--t-gold)' }}>AI 命盘解读</h3>
         <p className="text-[10px] mt-0.5" style={{ color: 'var(--t-faint)' }}>倪海厦正宗紫微斗数 · 智慧解析</p>
       </div>
@@ -147,7 +147,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
 
       {/* 预设问题 */}
       {messages.length === 0 && (
-        <div className="px-3 pb-2 flex-shrink-0">
+        <div className="px-3 pb-2 shrink-0">
           <div className="grid grid-cols-2 gap-1.5">
             {PRESET_QUESTIONS.map((q, i) => (
               <button
@@ -177,7 +177,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
       )}
 
       {/* 输入框 */}
-      <div className="px-3 pb-3 pt-2 flex-shrink-0" style={{ borderTop: '1px solid var(--t-border)' }}>
+      <div className="px-3 pb-3 pt-2 shrink-0" style={{ borderTop: '1px solid var(--t-border)' }}>
         <div className="flex gap-2">
           <input
             type="text"
@@ -186,7 +186,7 @@ export default function ChatPanel({ chart }: ChatPanelProps) {
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendMessage(input)}
             placeholder="输入问题，如：我的感情运势如何？"
             disabled={loading}
-            className="flex-1 rounded-lg px-3 py-2 text-xs focus:outline-none transition-colors"
+            className="flex-1 rounded-lg px-3 py-2 text-xs focus:outline-hidden transition-colors"
             style={{
               background: 'var(--t-card)',
               border: '1px solid var(--t-border)',

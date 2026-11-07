@@ -1,6 +1,91 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --color-bg-0: #fafaf9;
+  --color-bg-1: #f4f3ef;
+  --color-bg-2: #eceae4;
+  --color-bg-inv: #0d0d0b;
+
+  --color-tx-0: #0d0d0b;
+  --color-tx-1: #1a1a18;
+  --color-tx-2: #4a4a45;
+  --color-tx-3: #8a8a82;
+  --color-tx-inv: #f0ede8;
+
+  --color-ac: #b8922a;
+  --color-ac-dim: #7a5f1a;
+
+  --color-lu: #2d7a4a;
+  --color-quan: #1a56a8;
+  --color-ke: #8a7018;
+  --color-ji: #a83228;
+
+  --font-sans: var(--font);
+  --font-mono: var(--font-mono);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  --animate-fade-up: fadeUp 0.5s ease forwards;
+  --animate-fade-in: fadeIn 0.4s ease forwards;
+  --animate-spin-slow: spin 20s linear infinite;
+
+  @keyframes fadeUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+
+  /*
+    Tailwind v4's preflight no longer gives buttons `cursor: pointer` (v3 did).
+    Restore the v3 behaviour so existing buttons keep the hand cursor.
+    Snippet from the Tailwind v4 upgrade guide.
+  */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
 
 /* ─── 2.0 设计系统 Token ─────────────────────────────────── */
 :root {

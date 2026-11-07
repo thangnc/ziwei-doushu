@@ -38,7 +38,7 @@ export default function PatternsCard({ chart }: { chart: ZiweiChart }) {
               className="card-inner rounded-lg p-3"
             >
               <div className="flex items-center gap-2 mb-1.5">
-                <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${st.dot}`} />
+                <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${st.dot}`} />
                 <span className={`text-[11px] font-medium ${st.label}`}>{p.name}</span>
                 <div className="flex gap-1 ml-auto">
                   {p.palaces.slice(0, 2).map(pa => (

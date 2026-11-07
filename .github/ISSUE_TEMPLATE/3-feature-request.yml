@@ -1,0 +1,52 @@
+name: Feature request / 功能建议
+description: A new feature or an improvement you'd like
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This repo is the open-source charting engine plus a small demo. Interpretation text, AI prompts and `/api/*` routes are out of scope (see "What is not included" in the README).
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Chart engine (lib/ziwei)
+        - School options (亮度, 闰月, 晚子时, 四化 …)
+        - Birth form / true solar time
+        - Chart board / time navigation
+        - 合盘 (/heming)
+        - Library / Knowledge
+        - Localization (Vietnamese / Chinese UI)
+        - Developer tooling / tests / CI
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: What problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: How you imagine it working
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds you use today, or other ways it could work.
+  - type: checkboxes
+    id: convention
+    attributes:
+      label: Charting convention
+      options:
+        - label: This changes or adds a charting convention (where stars go, brightness, 四化, 大限 …), not just the UI or tooling.
+  - type: textarea
+    id: source
+    attributes:
+      label: Source (required when it touches a charting convention)
+      description: Which book or lecture, or which setting in which charting software. Changes to a convention without a source are generally not accepted, and points where schools differ become options rather than new defaults.

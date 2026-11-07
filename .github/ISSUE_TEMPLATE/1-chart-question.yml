@@ -8,6 +8,28 @@ body:
       value: |
         A bare "it's inaccurate" can't be investigated. Please fill in everything below and we'll compare item by item.
         Note: supporting-star brightness, leap-month assignment and whether the late 子时 changes the day differ between schools by design. Such differences aren't bugs, but pointing them out is still welcome.
+
+        **Privacy:** birth data is personal data. Use a made-up birth, a published sample chart, or your own data only if you're happy for it to be public. Never post someone else's birth data without their consent.
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Before you start
+      options:
+        - label: I searched existing issues and this hasn't been reported.
+          required: true
+        - label: The birth data below is synthetic, a published sample, or shared with consent.
+          required: true
+  - type: dropdown
+    id: source
+    attributes:
+      label: Where you got this project's result
+      options:
+        - Local demo (npm run dev / build + start)
+        - chart skill CLI (.claude/skills/chart/chart.ts)
+        - Calling generateChart directly
+        - ouranic.cn
+    validations:
+      required: true
   - type: input
     id: date
     attributes:
@@ -35,18 +57,50 @@ body:
       options: ["Male", "Female"]
     validations:
       required: true
+  - type: dropdown
+    id: leap-month
+    attributes:
+      label: Leap-month policy (闰月归属)
+      description: Only matters when the birth falls in a lunar leap month. It's the one school option the demo passes to the engine.
+      options:
+        - Not a leap month / not sure
+        - 视为分半 split (default)
+        - 视为本月 prev-month
+        - 视为下月 next-month
+        - 保持闰月 origin-month
+    validations:
+      required: true
+  - type: dropdown
+    id: item
+    attributes:
+      label: Which kind of item differs
+      multiple: true
+      options:
+        - 命宫 / 身宫 position
+        - 五行局
+        - Major star placement
+        - Supporting or minor star placement
+        - Star brightness
+        - 四化
+        - 大限 / 小限
+        - 流年 / 流月
+        - 格局 (patterns)
+        - Four pillars / true solar time / 时辰
+        - Other
+    validations:
+      required: true
   - type: textarea
     id: ours
     attributes:
       label: This project's result
-      description: A screenshot, or the relevant fields from the generateChart output.
+      description: A screenshot, or the relevant fields from the generateChart / chart skill output.
     validations:
       required: true
   - type: input
     id: ref
     attributes:
       label: What you compared against
-      placeholder: "e.g. other charting software / a book and page number"
+      placeholder: "e.g. other charting software and its settings / a book and page number"
     validations:
       required: true
   - type: textarea
@@ -63,3 +117,9 @@ body:
       placeholder: "e.g. the 命宫 should be in 卯, but it's placed in 戌 here"
     validations:
       required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+      description: "The commit you ran (git rev-parse --short HEAD), or the date you used the site."
+      placeholder: "e.g. 1e33b76"

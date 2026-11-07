@@ -51,9 +51,9 @@
     `feat(engine): …` · `docs(README): …` · `fix(share): …`
   - **On the fork `thangnc/ziwei-doushu`, commit messages, PR titles and PR descriptions are in English** (the owner's choice). Chart terms that are engine identifiers (四化, 大限, 时辰) may stay in Chinese.
   - Add `(#issue)` when there is one.
-- Commits are SSH-signed (repo-local `commit.gpgsign`). The fork's `main` ruleset requires signed commits and a PR. Its status-check rule names no checks, so CI passing is enforced only by the `/ship` routine, not by GitHub. Merge PRs with a merge commit, never squash or rebase.
+- Commits are SSH-signed (repo-local `commit.gpgsign`). The fork's `main` ruleset requires signed commits and a PR. Its status-check rule names no checks, so CI passing is enforced only by the `/ship` routine, not by GitHub. The check to require there is `CI result`, the job in `ci.yml` that sums up the others. Merge PRs with a merge commit, never squash or rebase.
 - Run `gh` with `--repo thangnc/ziwei-doushu`; otherwise it targets the upstream repo, because the fork has a parent.
-- `next dev` rewrites `next-env.d.ts` and `tsconfig.json`. Don't stage those generated edits unless the task is about them.
+- `next dev` rewrites `next-env.d.ts` to its dev form. Don't stage that edit. The committed `next-env.d.ts` and `tsconfig.json` are the `next build` versions, and CI's "Working tree is clean after build" step fails if a build changes them.
 - Commit, push or open a PR only when the user asks. Never commit `.env.local`, keys or real people's birth data.
 
 ## Privacy

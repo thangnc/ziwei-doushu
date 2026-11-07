@@ -55,7 +55,7 @@ They exist so that later localization and refactoring can show that this output 
 
 **Earlier dependency update, 2026-11-07:** iztro 2.6.1 → 2.6.5 and lunar-javascript 1.7.7 → 1.7.8 left all three bodies byte-identical; the Node 24 regeneration above refreshed that metadata.
 
-**CI uses the same image.** `.github/workflows/ci.yml` runs its single `check` job in `container:` with this digest, instead of `setup-node` with `node-version: '24'`, which would float to the newest 24.x and its ICU/tzdata. So the generation and verification environments are identical.
+**CI uses the same image.** `.github/workflows/ci.yml` runs every job that uses Node (repository guards, typecheck, chart regression, build and smoke test) in `container:` with this digest, instead of `setup-node` with `node-version: '24'`, which would float to the newest 24.x and its ICU/tzdata. So the generation and verification environments are identical.
 
 **Local development** uses `.nvmrc` (`24.22.2`) and `package.json` `engines`. Local runs are **Node-runtime-compatible, not environment-identical**: macOS on arm64 is a different OS and architecture. They are for development only; **fixtures are never generated locally.**
 

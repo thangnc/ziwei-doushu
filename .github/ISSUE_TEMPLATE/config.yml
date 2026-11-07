@@ -1,5 +1,11 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Questions & discussion / 使用问题与交流
-    url: https://github.com/Renhuai123/ziwei-doushu/discussions
-    about: How to use it, how to read a particular judgment, and ideas belong in Discussions. Keep issues for reproducible problems.
+  - name: Read the README first
+    url: https://github.com/thangnc/ziwei-doushu#readme
+    about: What the engine does, how to run it, and what the open-source version leaves out (AI interpretation and /api/* routes return 404 by design).
+  - name: Contributing guide
+    url: https://github.com/thangnc/ziwei-doushu/blob/main/CONTRIBUTING.md
+    about: How to ask a question about a chart, report a bug or open a PR.
+  - name: Problems with ouranic.cn (upstream)
+    url: https://github.com/Renhuai123/ziwei-doushu/issues
+    about: The live site belongs to the upstream project. Report login, payment and display problems there; this fork can't fix them.

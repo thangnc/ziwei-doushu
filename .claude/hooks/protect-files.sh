@@ -2,10 +2,15 @@
 # PreToolUse (Edit|Write): block edits to files that must not be hand-edited.
 # Exit 2 = block the tool call; stderr is shown to Claude.
 set -euo pipefail
+. "$(dirname "$0")/lib.sh"
 
 f=$(jq -r '.tool_input.file_path // empty')
 [ -z "$f" ] && exit 0
-rel="${f#"${CLAUDE_PROJECT_DIR:-$PWD}"/}"
+# Relative to the checkout that contains the file (main checkout or a worktree), so the rules
+# below also match .claude/worktrees/<name>/package-lock.json and friends.
+root=$(repo_root_for "$f" || true)
+[ -z "$root" ] && exit 0
+rel="${f#"$root"/}"
 
 case "$rel" in
   lib/ziwei/school-tables.generated.ts)

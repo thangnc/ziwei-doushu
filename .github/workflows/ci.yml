@@ -32,3 +32,30 @@ jobs:
 
       - name: 排盘引擎回归
         run: npm test
+
+  node24:
+    name: Node 24 兼容性（不阻塞）
+    runs-on: ubuntu-latest
+    # 仅做兼容性检查，不是基线校验环境：失败不影响整个 workflow 的结论。
+    # 基线 body 不一致时请开 issue 排查，绝不据此重生成 fixture；ENVIRONMENT MISMATCH 报告只是信息。
+    # package.json engines 固定 22.22.3，npm ci 会打印 EBADENGINE 警告，属预期。
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci --no-audit --no-fund
+
+      - name: 类型检查
+        run: npm run typecheck
+
+      - name: 排盘引擎回归
+        run: npm test
+
+      - name: 构建
+        run: npm run build

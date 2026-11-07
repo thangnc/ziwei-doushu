@@ -49,6 +49,8 @@ No extra CI job for now. **Node 22.22.3** stays the canonical runtime (see `scri
 
 Status: the issue and PR have **not been created yet**. Filing on GitHub is an outward-facing action, so it waits for confirmation of the target repository.
 
+**Fixed 2026-11-07** in an isolated bugfix PR, as decided above. Under `origin-month`, `generateChart` now charts a leap-month birth with `astro.bySolar(…, fixLeap=false)` instead of round-tripping the date through `astro.byLunar`. The crash affected 17 dates in 1900–2100, not only 2017-08-21. Root cause, evidence and prevention: `docs/solutions/engine/origin-month-must-not-round-trip-a-leap-day-through-iztro-bylunar.md`. Regression test: `scripts/regression/leap-origin-month-thirtieth-day.test.ts`. The baseline bodies are unchanged. No separate issue was filed (owner's decision, 2026-11-07): the PR and the solution doc are the record.
+
 ## 2026-11-07: Phase 1 (i18n core) started
 
 Scope:

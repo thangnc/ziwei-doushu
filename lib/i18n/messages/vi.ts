@@ -1,14 +1,14 @@
 /**
  * Vietnamese messages. Structure is enforced by `satisfies Messages` (missing or extra keys fail tsc).
  *
- * Language policy (lib/i18n/DECISIONS.md, GLOSSARY to come in Phase 2):
- *  - specialist Tử Vi terms in Hán-Việt, only when attested in TERMINOLOGY_AUDIT.md (Verified);
+ * Language policy (docs/decisions/localization.md, GLOSSARY to come in Phase 2):
+ *  - specialist Tử Vi terms in Hán-Việt, only when attested in docs/audits/terminology-audit.md (Verified);
  *    Disputed/Unverified terms are NOT used (e.g. 流年 / 本命 are avoided here);
  *  - ordinary UI text in natural Vietnamese.
  *
  * Terms used below and their status:
  *  - "Tử Vi Đẩu Số": the discipline's name, attested by the title of Thái Thứ Lang, "Tử Vi Đẩu Số Tân Biên" (TTL, the audit's main source).
- *  - "Đại Hạn" (大限): Verified, TERMINOLOGY_AUDIT.md (TTL p.20 §10.1).
+ *  - "Đại Hạn" (大限): Verified, docs/audits/terminology-audit.md (TTL p.20 §10.1).
  *  - "Nghê Hải Hạ" (倪海厦), "Toàn Thư" / "Toàn Tập" (全书 / 全集), "Cốt Tủy Phú" (骨髓赋):
  *    PENDING GLOSSARY REVIEW — proper names, not engine identifiers, not covered by the audit. Hán-Việt readings.
  *  - "chính tinh" (主星), "cung" (宫), "lá số" (命盘), "mệnh lý" (命理), "luận giải": generic vocabulary used only in

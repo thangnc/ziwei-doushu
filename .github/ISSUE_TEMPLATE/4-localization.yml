@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        The UI is localized in Vietnamese and Chinese. Chart terms follow the agreed terminology in `lib/i18n/TERMINOLOGY_AUDIT.md` and `lib/i18n/DECISIONS.md`; please check those before proposing a different term.
+        The UI is localized in Vietnamese and Chinese. Chart terms follow the agreed terminology in `docs/audits/terminology-audit.md` and `docs/decisions/localization.md`; please check those before proposing a different term.
         Quoted classical and 倪师 text stays verbatim in Chinese and isn't translated.
   - type: checkboxes
     id: preflight

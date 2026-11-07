@@ -1,7 +1,7 @@
 /**
  * 回归：语言 cookie → locale 的解析（Phase 1 i18n core）。
  *
- * 决策（lib/i18n/DECISIONS.md）：越南语为默认语言，保留中文；语言由 cookie `ziwei-locale` 决定。
+ * 决策（docs/decisions/localization.md）：越南语为默认语言，保留中文；语言由 cookie `ziwei-locale` 决定。
  * 任何缺失 / 未知 / 大小写或空白不符的 cookie 值都回落到默认语言，绝不抛错（cookie 来自用户，不可信）。
  */
 import assert from 'node:assert/strict';

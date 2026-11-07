@@ -65,4 +65,4 @@ Detailed rules are in `.claude/rules/`. Most load only when Claude works on matc
 - `engine.md` (`lib/ziwei/**`): evidence required for any change to chart output, school options instead of hard-coded fixes, engine invariants.
 - `regression-tests.md` (`scripts/regression/**`, `package.json`): test house style and registration.
 - `demo-ui.md` (`app/**`, `components/**`): no backend, no `server-only` modules in client components.
-- `content-and-licensing.md` (docs, classics, README): exact quotations, separate licences, keeping both READMEs in sync (`README.md` English by default, `README.zh-CN.md` Chinese).
+- `content-and-licensing.md` (`docs/tianji-ziwei/`, classics, README): exact quotations, separate licences, keeping both READMEs in sync (`README.md` English by default, `README.zh-CN.md` Chinese).

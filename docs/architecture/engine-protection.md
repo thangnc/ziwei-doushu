@@ -27,7 +27,7 @@ It resolves `@/` and relative paths the way `tsconfig.json` `paths` does.
 **Scan scope:** 64 modules, of which 21 are `'use client'`. There are 15 route entries:
 `app/layout.tsx`, `app/page.tsx`, `app/chart/page.tsx`, `app/heming/page.tsx`, `app/knowledge/page.tsx`, `app/knowledge/[star]/[topic]/page.tsx`, `app/library/page.tsx`, `app/library/[book]/page.tsx`, `app/library/[book]/[chapter]/page.tsx`, `app/library/search/page.tsx`, `app/preview/page.tsx`, `app/privacy/page.tsx`, `app/terms/page.tsx`, `app/robots.ts`, `app/sitemap.ts`.
 
-**Components no route reaches (static analysis):** `ChartSummary`, `ChatPanel`, `FamousPersonCard`, `PatternsCard`, `ShareCardCanvas`, `ShareModal`, `StarDetailPanel`. D2 (`lib/i18n/UI_INVENTORY.md`) adds whether each is reachable through interactions.
+**Components no route reaches (static analysis):** `ChartSummary`, `ChatPanel`, `FamousPersonCard`, `PatternsCard`, `ShareCardCanvas`, `ShareModal`, `StarDetailPanel`. D2 (`docs/audits/ui-inventory.md`) adds whether each is reachable through interactions.
 
 ### Audited modules: the three states, reported separately
 
@@ -87,7 +87,7 @@ The build rewrote `next-env.d.ts` from `.next/dev/types/...` to `.next/types/...
 
 1. **Normal chart generation** is a **POST / server action**, with the birth data in the request **body**. The server action:
    1. validates the input
-   2. resolves the timezone (`lib/ziwei/TIME_MODEL.md`)
+   2. resolves the timezone (`docs/architecture/time-model.md`)
    3. runs `generateChart`
    4. runs detection and presentation
    5. returns serializable data to the existing client components
@@ -152,4 +152,4 @@ This needs no `/api` route and no API key. The repo rule "no backend" (`.claude/
 - Server-component code never appears in `.next/static`, so "absent" only says something about client chunks.
 - A marker that isn't found doesn't prove a module is absent: its strings may be transformed or deduplicated. The graph stays the primary check.
 
-**Runtime reachability:** this report gives only the **static route-reachability** half. Interaction-only reachability (modals, state changes, error paths) is in D2 (`lib/i18n/UI_INVENTORY.md`).
+**Runtime reachability:** this report gives only the **static route-reachability** half. Interaction-only reachability (modals, state changes, error paths) is in D2 (`docs/audits/ui-inventory.md`).

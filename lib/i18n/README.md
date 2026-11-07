@@ -23,8 +23,8 @@ const t = useT();  t('localeSwitcher.label');
 **Adding a string:** add it to `messages/zh.ts`, then add the same key to `messages/vi.ts`. `npm test` (`i18n-messages-parity`) checks that both have the same keys and placeholders, that no string is empty, and that the Vietnamese contains no Chinese characters (apart from an allowlist).
 
 **Vietnamese text must follow the language policy:**
-- Specialist Tử Vi terms are in Hán-Việt and come **only** from the Verified rows of `TERMINOLOGY_AUDIT.md`.
-- Disputed terms are not used until a decision is made (`DECISIONS.md` D-1).
+- Specialist Tử Vi terms are in Hán-Việt and come **only** from the Verified rows of `docs/audits/terminology-audit.md`.
+- Disputed terms are not used until a decision is made (`docs/decisions/localization.md` D-1).
 - Ordinary UI text is natural Vietnamese.
 
 ## Fonts
@@ -40,7 +40,7 @@ The same URL serves both languages. The consequences:
 - **There are no per-language URLs and no `hreflang` alternates.** `og:locale:alternate` is emitted, but search engines don't use it as `hreflang`.
 - **A shared link opens in the recipient's own language,** not the sender's.
 - **Every route that renders under the root layout is now rendered on each request** (`ƒ` in `next build`), because the root layout reads the cookie. Pages that used to be static or SSG, like `/library/*`, `/knowledge`, `/privacy` and `/terms`, lose prerendering. This doesn't affect what they output.
-- `alternates.canonical` is still `/` on every page, as before. Fixing per-page canonical URLs is a separate issue (`UI_INVENTORY.md` §8).
+- `alternates.canonical` is still `/` on every page, as before. Fixing per-page canonical URLs is a separate issue (`docs/audits/ui-inventory.md` §8).
 
 This trade-off was accepted (plan revision 3). **Upgrade path, if multilingual SEO is needed later:**
 - Move routes under `app/[lang]/` with `generateStaticParams` for `vi`/`zh`.

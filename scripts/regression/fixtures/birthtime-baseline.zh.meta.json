@@ -1,0 +1,25 @@
+{
+  "fixture": "birthtime-baseline.zh",
+  "fixtureSchemaVersion": 1,
+  "generatorVersion": "1.0.0",
+  "records": 3104,
+  "bodyBytes": 563886,
+  "bodySha256": "a4ee66e4f3920b709292b1246d0c79e41f82ba000dfb9c7c38316960e54bbced",
+  "gitCommit": "a600484a49255039d0725f1ba9e11ca81a948f97+uncommitted-phase0",
+  "generatedAt": "2026-11-06T18:18:36.379Z",
+  "environment": {
+    "node": "v22.22.3",
+    "npm": "10.9.8",
+    "icu": "78.2",
+    "tz": "2026a",
+    "unicode": "17.0",
+    "platform": "linux",
+    "osRelease": "7.2.12-orbstack-00394-gbecdd6130068",
+    "arch": "x64",
+    "containerImage": "node:22.22.3-bookworm@sha256:46e94f8cf91baab69a2deb3153e74eeffd73c20c7cc1d8432f5b96469eaa0322",
+    "runtime": "container",
+    "iztro": "2.6.1",
+    "lunarJavascript": "1.7.7"
+  },
+  "storedBytes": 13842
+}

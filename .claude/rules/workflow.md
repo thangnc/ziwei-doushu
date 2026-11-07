@@ -31,7 +31,7 @@
   - computed `PATH=…` prefixes
   - long compound pipelines
 
-  Run binaries directly (`npm test`, `node_modules/.bin/tsc`) as separate commands. They use the shell's default Node; CI's pinned Node 24.22.2 container stays the reference for the baselines.
+  Run binaries directly (`npm test`, `node_modules/.bin/tsc`) as separate commands. They use the shell's default Node; CI's pinned Node 24.22.2 container stays the reference for the baselines. For multi-step shell work (loops, docker runs), write a script in the scratchpad and run it with `sh <script>`.
 - **Hooks resolve paths per checkout.** `$CLAUDE_PROJECT_DIR` stays at the main checkout inside a worktree session, so hooks use the edited file's git root or the session `cwd` (`.claude/hooks/lib.sh`). Keep it that way in new hooks.
 - **Escape hatch:** if the user explicitly wants an edit made in the main checkout, they create the gitignored marker `.claude/allow-main-edits` there and delete it afterwards. Never create it yourself.
 
@@ -51,7 +51,7 @@
     `feat(engine): …` · `docs(README): …` · `fix(share): …`
   - **On the fork `thangnc/ziwei-doushu`, commit messages, PR titles and PR descriptions are in English** (the owner's choice). Chart terms that are engine identifiers (四化, 大限, 时辰) may stay in Chinese.
   - Add `(#issue)` when there is one.
-- Commits are SSH-signed (repo-local `commit.gpgsign`). The fork's `main` ruleset requires signed commits, passing checks and a PR. Merge PRs with a merge commit, never squash or rebase.
+- Commits are SSH-signed (repo-local `commit.gpgsign`). The fork's `main` ruleset requires signed commits and a PR. Its status-check rule names no checks, so CI passing is enforced only by the `/ship` routine, not by GitHub. Merge PRs with a merge commit, never squash or rebase.
 - Run `gh` with `--repo thangnc/ziwei-doushu`; otherwise it targets the upstream repo, because the fork has a parent.
 - `next dev` rewrites `next-env.d.ts` and `tsconfig.json`. Don't stage those generated edits unless the task is about them.
 - Commit, push or open a PR only when the user asks. Never commit `.env.local`, keys or real people's birth data.

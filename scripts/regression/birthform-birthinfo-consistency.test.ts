@@ -5,7 +5,7 @@
  * `lib/ziwei/share.ts` 的 `formToBirthInfo()`，它负责「晚子时换日」：
  * 23:00–23:59 出生按**次日**排盘。这条规则是三处规格共同确定的：
  *   · `lib/ziwei/types.ts` 声明 `BirthInfo.year` 是「已经过子时换日修正后的排盘日」；
- *   · `README.md` 时辰对照表下一行：「23:00–23:59 出生（晚子时）按次日排盘、时辰取 0」；
+ *   · `README.zh-CN.md`（中文 README）时辰对照表下一行：「23:00–23:59 出生（晚子时）按次日排盘、时辰取 0」；
  *   · `scripts/regression/iztro-time-index-boundary.test.ts` 已把它钉成断言。
  *
  * 但 `components/BirthForm.tsx` 的 `handleSubmit` 曾经自行拼装 BirthInfo，

@@ -73,7 +73,7 @@ A and B agree on the instant, but A reports a "longitude correction" of −56 mi
 
 ### 1.4 README mismatch (finding; not resolved here)
 
-Exact lines in `README.md`:
+Exact lines in `README.md` at the time of this audit. That Chinese README was renamed `README.zh-CN.md` on 2026-11-07, and its wording has since been corrected, so the line numbers below are historical:
 - `README.md:311`: `| **真太阳时校正** | 按出生地经度算时差 + 均时差，避免东西向差一个时辰 |`
 - `README.md:335`: `| \`true-solar-time.ts\` | 真太阳时校正（经度差 + 均时差） |` (the same wording appears in the changelog table at `README.md:100`)
 - `README.md:312`: `| **中国夏令时** | 1986–1991 年的夏令时区间自动判定（只判定、不自动扣除；钟表读数由用户确认后用 \`clock-adjust.ts\` 换成标准时间） |`

@@ -1,7 +1,7 @@
 /**
  * Phase 0 / D1 — terminology identifier collector (READ-ONLY).
  *
- * Lists every Chinese identifier the charting engine (lib/ziwei/) can emit, together with
+ * Lists every Chinese identifier the charting engine (packages/ziwei-engine/src/, formerly lib/ziwei/) can emit, together with
  * the identifiers that are only DECLARED in engine types/tables and the ones that exist only
  * in iztro's locale data, and assigns each one exactly one reachability class:
  *
@@ -50,20 +50,20 @@ import {
   generateChart, setBrightnessSchool, resolveEffectiveLunarDate,
   calcMingZhu, calcShenZhu, calcYinYangGender,
   type LunarMonthPolicy,
-} from '../../lib/ziwei/algorithm';
-import { STEMS, BRANCHES, PALACE_NAMES_ORDER, JU_NAMES, SI_HUA_TABLE, STAR_DESCRIPTIONS, SHICHEN } from '../../lib/ziwei/constants';
+} from '../../packages/ziwei-engine/src/algorithm';
+import { STEMS, BRANCHES, PALACE_NAMES_ORDER, JU_NAMES, SI_HUA_TABLE, STAR_DESCRIPTIONS, SHICHEN } from '../../packages/ziwei-engine/src/constants';
 import {
   SCHOOL_STAR_ID_TO_NAME, BRIGHTNESS_NUM_TO_CN, BRIGHTNESS_NUM_TO_CN_5, BRIGHTNESS_NUM_TO_CN_BY_SCHOOL,
   SCHOOL_MING_ZHU_BY_DIZHI, SCHOOL_SHEN_ZHU_BY_DIZHI, type BrightnessSchool,
-} from '../../lib/ziwei/school-data';
-import { SCHOOL_AX } from '../../lib/ziwei/school-tables.generated';
+} from '../../packages/ziwei-engine/src/school-data';
+import { SCHOOL_AX } from '../../packages/ziwei-engine/src/school-tables.generated';
 import {
   JIANG_QIAN_SHEN, SUI_QIAN_SHEN, BOSHI_SHEN,
   jiangQianShenName, suiQianShenName, boshiShenName,
-} from '../../lib/ziwei/shier-shen';
-import { getChildhoodYears } from '../../lib/ziwei/yunxian-context';
-import { formToBirthInfo } from '../../lib/ziwei/share';
-import type { ZiweiChart } from '../../lib/ziwei/types';
+} from '../../packages/ziwei-engine/src/shier-shen';
+import { getChildhoodYears } from '../../packages/ziwei-engine/src/yunxian-context';
+import { formToBirthInfo } from '../../packages/ziwei-engine/src/share';
+import type { ZiweiChart } from '../../packages/ziwei-engine/src/types';
 
 const REPO = path.resolve(__dirname, '../..');
 const rel = (p: string) => path.relative(REPO, p).split(path.sep).join('/');
@@ -225,7 +225,7 @@ const inc = (c: Counter, k: string, n = 1) => { c[k] = (c[k] ?? 0) + n; };
 const incCat = (a: Agg, cat: string, k: string) => inc((a.cat[cat] ??= {}), k);
 
 async function runJobs(jobs: Job[]): Promise<Agg> {
-  const { detectPatterns, getMingGongSummary } = await import('../../lib/ziwei/patterns');
+  const { detectPatterns, getMingGongSummary } = await import('../../packages/ziwei-engine/src/patterns');
   const a = newAgg();
   for (const j of jobs) {
     setBrightnessSchool(j.school);
@@ -255,7 +255,7 @@ async function runJobs(jobs: Job[]): Promise<Agg> {
         a.selfSihuaPopulated++;
         for (const x of p.selfSihua) incCat(a, 'selfSihua', x.siHua);
       }
-      // 十二神 (lib/ziwei/shier-shen.ts) — natal anchors: 博士 from 生年干+性别, 岁前/将前 from 生年支
+      // 十二神 (packages/ziwei-engine/src/shier-shen.ts) — natal anchors: 博士 from 生年干+性别, 岁前/将前 from 生年支
       incCat(a, 'shierShen.boshi', boshiShenName(c.lunarInfo.yearStem, j.gender, p.branch));
       incCat(a, 'shierShen.suiqian', suiQianShenName(c.lunarInfo.yearBranch, p.branch));
       incCat(a, 'shierShen.jiangqian', jiangQianShenName(c.lunarInfo.yearBranch, p.branch));
@@ -361,14 +361,14 @@ function collectDeclared() {
   const iztroVersion = JSON.parse(readSrc('node_modules/iztro/package.json')).version as string;
 
   // ── stars ──
-  const SD = 'lib/ziwei/school-data.ts';
+  const SD = 'packages/ziwei-engine/src/school-data.ts';
   for (const [id, name] of Object.entries(SCHOOL_STAR_ID_TO_NAME)) addDecl(d, 'star', name, { file: SD, line: declLine(SD, 'SCHOOL_STAR_ID_TO_NAME', name), what: `SCHOOL_STAR_ID_TO_NAME[${id}]` });
   const aliasBlock = readSrc(SD).match(/SCHOOL_NAME_ALIAS[^=]*=\s*\{([^}]*)\}/);
   for (const n of aliasBlock ? [...aliasBlock[1].matchAll(/([^\s,:{}]+)\s*:/g)].map((m) => m[1]) : []) addDecl(d, 'star', n, { file: SD, line: lineOf(SD, 'const SCHOOL_NAME_ALIAS'), what: 'SCHOOL_NAME_ALIAS (shares a brightness row)' });
   for (const n of Object.values(SCHOOL_MING_ZHU_BY_DIZHI)) addDecl(d, 'star', n, { file: SD, line: lineOf(SD, 'SCHOOL_MING_ZHU_BY_DIZHI'), what: 'SCHOOL_MING_ZHU_BY_DIZHI' });
   for (const n of Object.values(SCHOOL_SHEN_ZHU_BY_DIZHI)) addDecl(d, 'star', n, { file: SD, line: lineOf(SD, 'SCHOOL_SHEN_ZHU_BY_DIZHI'), what: 'SCHOOL_SHEN_ZHU_BY_DIZHI' });
 
-  const AL = 'lib/ziwei/algorithm.ts';
+  const AL = 'packages/ziwei-engine/src/algorithm.ts';
   const alg = readSrc(AL);
   for (const setName of ['SHA_STARS', 'LUCKY_STARS']) {
     const m = alg.match(new RegExp(`const ${setName} = new Set\\(\\[([\\s\\S]*?)\\]\\)`));
@@ -389,7 +389,7 @@ function collectDeclared() {
   }
   for (let s = 0; s < 10; s++) for (const g of GENDERS) addDecl(d, 'yinYangGender', calcYinYangGender(s, g), { file: AL, line: lineOf(AL, 'export function calcYinYangGender'), what: 'calcYinYangGender range' });
 
-  const CO = 'lib/ziwei/constants.ts';
+  const CO = 'packages/ziwei-engine/src/constants.ts';
   for (const row of Object.values(SI_HUA_TABLE)) for (const n of row) addDecl(d, 'star', n, { file: CO, line: lineOf(CO, 'export const SI_HUA_TABLE'), what: 'SI_HUA_TABLE' });
   for (const n of Object.keys(STAR_DESCRIPTIONS)) addDecl(d, 'star', n, { file: CO, line: lineOf(CO, 'export const STAR_DESCRIPTIONS'), what: 'STAR_DESCRIPTIONS' });
   for (const n of PALACE_NAMES_ORDER) addDecl(d, 'palace', n, { file: CO, line: lineOf(CO, 'export const PALACE_NAMES_ORDER'), what: 'PALACE_NAMES_ORDER (no references outside constants.ts)' });
@@ -399,7 +399,7 @@ function collectDeclared() {
   SHICHEN.forEach((s) => addDecl(d, 'shichen', s.name, { file: CO, line: lineOf(CO, `name: '${s.name}'`), what: 'SHICHEN' }));
 
   // ── brightness ──
-  const TY = 'lib/ziwei/types.ts';
+  const TY = 'packages/ziwei-engine/src/types.ts';
   const types = readSrc(TY);
   const sb = types.match(/export type StarBrightness = ([^;]+);/);
   for (const v of sb ? quoted(sb[1]) : []) addDecl(d, 'brightness', v, { file: TY, line: lineOf(TY, 'export type StarBrightness'), what: 'StarBrightness union' });
@@ -410,11 +410,11 @@ function collectDeclared() {
   // ── 四化 ──
   const sh = types.match(/export type SiHua = ([^;]+);/);
   for (const v of sh ? quoted(sh[1]) : []) addDecl(d, 'sihua', v, { file: TY, line: lineOf(TY, 'export type SiHua'), what: 'SiHua union' });
-  const PT = 'lib/ziwei/patterns.ts';
+  const PT = 'packages/ziwei-engine/src/patterns.ts';
   for (const v of ['化禄', '化权', '化科', '化忌']) addDecl(d, 'sihuaCompound', v, { file: PT, line: lineOf(PT, v), what: 'compound used in pattern names/descriptions' });
 
   // ── 十二神 ──
-  const SS = 'lib/ziwei/shier-shen.ts';
+  const SS = 'packages/ziwei-engine/src/shier-shen.ts';
   JIANG_QIAN_SHEN.forEach((n) => addDecl(d, 'shierShen.jiangqian', n, { file: SS, line: lineOf(SS, 'export const JIANG_QIAN_SHEN'), what: 'JIANG_QIAN_SHEN' }));
   SUI_QIAN_SHEN.forEach((n) => addDecl(d, 'shierShen.suiqian', n, { file: SS, line: lineOf(SS, 'export const SUI_QIAN_SHEN'), what: 'SUI_QIAN_SHEN' }));
   BOSHI_SHEN.forEach((n) => addDecl(d, 'shierShen.boshi', n, { file: SS, line: lineOf(SS, 'export const BOSHI_SHEN'), what: 'BOSHI_SHEN' }));
@@ -443,13 +443,13 @@ function collectDeclared() {
   addDecl(d, 'mingGongSummary.nature', '空宫', { file: PT, line: lineOf(PT, ": '空宫'"), what: 'getMingGongSummary nature for a 命宫 with no major star' });
 
   // ── 运限 view labels ──
-  const YC = 'lib/ziwei/yunxian-context.ts';
+  const YC = 'packages/ziwei-engine/src/yunxian-context.ts';
   const yv = readSrc(YC).match(/export type YunxianView = ([^;]+);/);
   const VIEW_LABEL: Record<string, string> = { mingpan: '本命', daxian: '大限', liunian: '流年', xiaoxian: '小限', liuyue: '流月', liuri: '流日', liushi: '流时' };
   const yunxianViews = yv ? quoted(yv[1]) : [];
   for (const v of yunxianViews) addDecl(d, 'yunxianLabel', VIEW_LABEL[v] ?? v, { file: YC, line: lineOf(YC, 'export type YunxianView'), what: `YunxianView '${v}'` });
   addDecl(d, 'yunxianLabel', '童限', { file: YC, line: lineOf(YC, 'export const CHILDHOOD_DAXIAN_INDEX'), what: 'CHILDHOOD_DAXIAN_INDEX / getChildhoodYears' });
-  const TN = 'components/TimeNav.tsx';
+  const TN = 'apps/web/components/TimeNav.tsx';
   for (const lbl of ['本命', '大限', '流年']) addDecl(d, 'yunxianLabel', lbl, { file: TN, line: lineOf(TN, new RegExp(`^\\s*${lbl}\\s*$`)) || lineOf(TN, lbl), what: 'TimeNav tab label' });
 
   // ── concepts emitted as structure ──

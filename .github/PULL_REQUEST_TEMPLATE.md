@@ -15,12 +15,12 @@
 
 ## Affected areas
 
-- [ ] Chart engine (`lib/ziwei/`)
+- [ ] Chart engine (`packages/ziwei-engine/`)
 - [ ] Birth form / true solar time / 时辰 (`share.ts`, `true-solar-time.ts`)
 - [ ] Chart board / time navigation (大限 / 流年)
 - [ ] 合盘 (`/heming`)
 - [ ] Library / Knowledge
-- [ ] Localization (`lib/i18n/`)
+- [ ] Localization (`apps/web/lib/i18n/`)
 - [ ] Regression tests / baseline fixtures
 - [ ] CI / `.github/`
 - [ ] Other: <!-- specify -->
@@ -31,7 +31,7 @@
 
 - [ ] No change: the baseline fixtures pass unchanged (or the PR doesn't touch the engine)
 - [ ] Changed on purpose: the `chart-diff-reviewer` report (or a `chart.ts --sweep` diff) and the evidence are below: a cited passage, a 《天纪》 time code, or a reference chart from other software
-- [ ] Baselines regenerated in the canonical container, following `scripts/regression/fixtures/README.md`
+- [ ] Baselines regenerated in the canonical container, following `packages/ziwei-engine/test/fixtures/README.md`
 
 ## Verification
 

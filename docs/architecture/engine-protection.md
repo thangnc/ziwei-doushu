@@ -9,6 +9,8 @@ npx tsx scripts/audit/dependency-graph.ts --json     # machine-readable
 npx next build && npx tsx scripts/audit/dependency-graph.ts --bundle   # adds the bundle-marker states
 ```
 
+> **Update 2026-11-08 (monorepo move):** build with `npm run build` (it runs `next build` in `apps/web`), then run `--bundle`. The checker now scans `apps/web/{app,components,lib}` and `packages/ziwei-engine/src`, resolves `@/` to `apps/web/` and `@ziwei/engine/<module>` to the engine sources, and searches `apps/web/.next/static`. On the new layout it reports the same 15 route entries, the same 7 unreached components and the same `patterns.ts` finding as §1. Paths and line numbers in the sections below are as of the original audit.
+
 The checker (`scripts/audit/dependency-graph.ts`) parses every `.ts`/`.tsx` file under `app/`, `components/` and `lib/` with the TypeScript compiler API, which is already a dev dependency.
 
 **Edge types it records:**

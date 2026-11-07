@@ -41,6 +41,8 @@ This repo is an open snapshot of the engine behind [ouranic.cn](https://ouranic.
 - **Engine sync** ([PR #39](https://github.com/Renhuai123/ziwei-doushu/pull/39)): `chinaDSTSpan(year)` in `dst-cn.ts`; longitudes for province-administered county-level cities in `cities.ts`.
 - **License**: `DATASET-LICENSE` now covers v4.0; quotations from *Tian Ji* inside the readings are not covered by the dataset license.
 
+> **2026-11-08 addendum**: the repository is now an npm-workspaces monorepo run by Turborepo. The engine moved from `lib/ziwei/` to the package `packages/ziwei-engine/` (`@ziwei/engine`; sources in `src/`, regression tests and baseline fixtures in `test/`), and the demo app (`app/`, `components/`, `lib/`) moved to `apps/web/`. `npm run dev`, `npm run build`, `npm run typecheck` and `npm test` still run from the repository root; Next.js uses Turbopack for both dev and build. Files were moved, not rewritten: all three baseline fixtures and an 832-chart sweep are byte-identical (#20).
+
 > **2026-11-07 addendum**: English is now the default README. This file, previously `README.en.md`, is now `README.md`, and the Chinese README moved to [`README.zh-CN.md`](./README.zh-CN.md). Neither text changed apart from the language links. This English version is still a summary; the Chinese README has the full detail.
 
 > **2026-11-07 addendum**: correction to the feature table. The chart form (`lib/ziwei/share.ts`) has always applied a longitude correction only (UTC+8, (longitude − 120°) × 4 minutes, i.e. local mean solar time) and **no equation of time**; the earlier wording "longitude offset plus the equation of time" was wrong. Documentation only, chart results are unchanged; "true solar time" for the chart form below means this convention. Also: the UI is gaining a Vietnamese version (Vietnamese by default, Chinese still available); chart results do not depend on the language, see `lib/i18n/README.md`.
@@ -64,7 +66,7 @@ This repo is an open snapshot of the engine behind [ouranic.cn](https://ouranic.
 | Twelve spirits | Natal layer by year branch, annual layer by the annual branch |
 | Patterns | 1,100+ lines of pattern rules (紫府同宫, 日月并明, 七杀朝斗, …) |
 
-Engine code lives in `lib/ziwei/` (entry point: `generateChart()` in `algorithm.ts`). Inputs are a **Gregorian** date and an **hour branch index 0–11** (子 = 0 … 亥 = 11), not a clock hour.
+Engine code lives in `packages/ziwei-engine/src/`, published inside the repo as the workspace package `@ziwei/engine` (entry point: `generateChart()` in `algorithm.ts`, imported as `@ziwei/engine/algorithm`). Inputs are a **Gregorian** date and an **hour branch index 0–11** (子 = 0 … 亥 = 11), not a clock hour.
 
 ## Quick start
 
@@ -82,7 +84,7 @@ npm test             # charting regression tests
 
 ## What is not included
 
-The interpretation database (`lib/ziwei/db-analysis.ts` is a placeholder), AI prompts, all `/api/*` backend routes, user accounts, payments, and deployment configuration.
+The interpretation database (`packages/ziwei-engine/src/db-analysis.ts` is a placeholder), AI prompts, all `/api/*` backend routes, user accounts, payments, and deployment configuration.
 
 ## Interpretation dataset v4.0 (674,976 charts × 13 topics, 2026-10-15)
 
@@ -115,7 +117,7 @@ Download from [Releases](https://github.com/Renhuai123/ziwei-doushu/releases/tag
 
 | Part | License |
 |---|---|
-| Code (`lib/`, `app/`, `components/`) | [MIT](./LICENSE) |
+| Code (`packages/`, `apps/`, `scripts/`) | [MIT](./LICENSE) |
 | Sample dataset (Releases) | [CC BY 4.0](./DATASET-LICENSE): commercial use OK with attribution |
 | Classical texts | Public domain |
 | Ni Haixia quotes (`docs/tianji-ziwei/`) | [CC BY-NC-SA 4.0](./docs/tianji-ziwei/LICENSE.md): **non-commercial only** |

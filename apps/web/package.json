@@ -1,0 +1,33 @@
+{
+  "name": "@ziwei/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx test/birthform-birthinfo-consistency.test.ts && tsx test/heming-refresh.test.ts && tsx test/heming-stream.test.ts && tsx test/i18n-messages-parity.test.ts && tsx test/i18n-locale-resolution.test.ts"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.1.0",
+    "@ziwei/engine": "*",
+    "clsx": "^2.1.1",
+    "framer-motion": "^14.10.1",
+    "html2canvas": "^1.4.1",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss": "^8.5.32",
+    "tailwindcss": "^4.3.5",
+    "tsx": "^4.19.0",
+    "typescript": "^6.0.3"
+  }
+}

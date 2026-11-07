@@ -13,7 +13,7 @@ root=$(repo_root_for "$f" || true)
 rel="${f#"$root"/}"
 
 case "$rel" in
-  lib/ziwei/school-tables.generated.ts)
+  packages/ziwei-engine/src/school-tables.generated.ts)
     echo "Blocked: $rel is generated (勿手改) and its generator scripts/extract-school-tables.ts is not in this repo. Ask the user before changing it." >&2
     exit 2 ;;
   docs/tianji-ziwei/*)

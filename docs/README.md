@@ -10,6 +10,8 @@ Engineering records for this repo, plus the synced 倪师 corpus. Nothing here i
 | [`solutions/`](./solutions/) | Lessons already paid for, one per file: problem, root cause, solution, prevention. Search it before changing an area; add to it with `/record-solution`. Format: [`solutions/README.md`](./solutions/README.md), checked in CI. |
 | [`tianji-ziwei/`](./tianji-ziwei/) | 1848 quoted lines from 倪海厦《天纪》, synced from the `nihai-tianji-corpus` repo and licensed CC BY-NC-SA 4.0. **Read-only here**: corrections go upstream, and a hook blocks edits. |
 
-Docs that describe one folder stay beside it: [`lib/i18n/README.md`](../lib/i18n/README.md) (how the i18n layer works) and [`scripts/regression/fixtures/README.md`](../scripts/regression/fixtures/README.md) (baseline fixtures and the canonical Node container).
+Docs that describe one folder stay beside it: [`apps/web/lib/i18n/README.md`](../apps/web/lib/i18n/README.md) (how the i18n layer works) and [`packages/ziwei-engine/test/fixtures/README.md`](../packages/ziwei-engine/test/fixtures/README.md) (baseline fixtures and the canonical Node container).
+
+**Path update 2026-11-08:** the repo became an npm-workspaces + Turborepo monorepo. `lib/ziwei/` is now `packages/ziwei-engine/src/`, `scripts/regression/fixtures/` is `packages/ziwei-engine/test/fixtures/`, and `app/`, `components/` and the rest of `lib/` are under `apps/web/`. Architecture docs, decision logs, audits and solution docs written before that date keep the old paths and line numbers as records.
 
 `architecture/`, `decisions/` and `audits/` were moved here from `lib/ziwei/` and `lib/i18n/` on 2026-11-07. Their content is unchanged, so headings such as "TIME_MODEL" and "deliverable D3" keep their original names.

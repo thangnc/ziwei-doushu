@@ -4,7 +4,7 @@ updates:
   # version comment current. One grouped PR per week instead of one per action.
   # Dependabot does not update the `container: image:` digest in ci.yml; that image is the
   # canonical baseline environment and changes only by the procedure in
-  # scripts/regression/fixtures/README.md.
+  # packages/ziwei-engine/test/fixtures/README.md.
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -20,7 +20,7 @@ updates:
   # fixes still arrive, grouped into one PR.
   # A bump to iztro or lunar-javascript can change chart output: it needs the baselines
   # regenerated in the canonical container and reviewed like any engine change
-  # (scripts/regression/fixtures/README.md, rule 4). `npm test` fails on such a PR until then.
+  # (packages/ziwei-engine/test/fixtures/README.md, rule 4). `npm test` fails on such a PR until then.
   - package-ecosystem: "npm"
     directory: "/"
     schedule:

@@ -11,6 +11,7 @@
 // Node standard library only.
 
 import { spawn } from 'node:child_process';
+import path from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 
 const PORT = Number(process.env.SMOKE_PORT ?? 3000);
@@ -32,7 +33,9 @@ const EXPECT = [
   ['/api/heming', 404],
 ];
 
-const server = spawn('node_modules/.bin/next', ['start', '-p', String(PORT), '-H', '127.0.0.1'], {
+// The web app is the apps/web workspace; npm workspaces hoist the `next` binary to the root node_modules.
+const server = spawn(path.resolve('node_modules/.bin/next'), ['start', '-p', String(PORT), '-H', '127.0.0.1'], {
+  cwd: 'apps/web',
   stdio: ['ignore', 'pipe', 'pipe'],
 });
 let serverLog = '';

@@ -25,10 +25,10 @@ npm test             # chart regression tests
 ```
 
 - One change per PR. Say what changed and why in the description.
-- **If it changes chart results**: attach evidence (a cited source, or a screenshot from other charting software), and add a regression test under `scripts/regression/`, registered in the `test` script in `package.json`. Changes to a convention without a source are generally not accepted.
+- **If it changes chart results**: attach evidence (a cited source, or a screenshot from other charting software), and add a regression test under `packages/ziwei-engine/test/`, registered in the `test` script in `packages/ziwei-engine/package.json`. Changes to a convention without a source are generally not accepted.
 - CI runs on every push and PR, in the Node 24.22.2 container the baseline fixtures are generated in (see `.nvmrc`):
   - **CI**:
-    - repository guards: every `scripts/regression/*.test.ts` is registered in `npm test`, and the Node versions agree;
+    - repository guards: every `*.test.ts` in `packages/ziwei-engine/test/`, `apps/web/test/` and `scripts/regression/` is registered in its `package.json` `test` script, and the Node versions agree;
     - typecheck;
     - chart regression (`npm test`);
     - build and smoke test: the build must leave the working tree clean, `next start` must serve every page, and the `/api/*` routes must return 404.

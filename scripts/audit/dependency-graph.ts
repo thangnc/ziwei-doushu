@@ -16,11 +16,14 @@ import path from 'node:path';
 import ts from 'typescript';
 
 const ROOT = path.resolve(__dirname, '../..');
-const SRC_DIRS = ['app', 'components', 'lib'];
+// Monorepo layout (2026-11-08): the web app lives in apps/web and the engine in packages/ziwei-engine.
+const WEB = 'apps/web';
+const ENGINE_SRC = 'packages/ziwei-engine/src';
+const SRC_DIRS = [`${WEB}/app`, `${WEB}/components`, `${WEB}/lib`, ENGINE_SRC];
 const EXTS = ['.ts', '.tsx', '.js', '.jsx', '.mjs'];
 
 /** Engine rule/detection modules audited even if they don't import 'server-only'. */
-const RULE_MODULES = ['lib/ziwei/patterns.ts', 'lib/ziwei/famous.ts', 'lib/ziwei/heming-knowledge.ts', 'lib/ziwei/db-analysis.ts'];
+const RULE_MODULES = ['patterns.ts', 'famous.ts', 'heming-knowledge.ts', 'db-analysis.ts'].map((f) => `${ENGINE_SRC}/${f}`);
 
 interface Edge { to: string; kind: 'value' | 'type' | 'dynamic' | 'reexport' | 'side-effect'; spec: string; line: number }
 interface ModuleInfo { file: string; client: boolean; serverOnly: boolean; edges: Edge[]; unresolved: string[] }
@@ -36,7 +39,8 @@ function walk(dir: string, out: string[] = []): string[] {
 
 function resolveSpec(fromFile: string, spec: string): string | null {
   let base: string | null = null;
-  if (spec.startsWith('@/')) base = path.join(ROOT, spec.slice(2));
+  if (spec.startsWith('@/')) base = path.join(ROOT, WEB, spec.slice(2));
+  else if (spec.startsWith('@ziwei/engine/')) base = path.join(ROOT, ENGINE_SRC, spec.slice('@ziwei/engine/'.length));
   else if (spec.startsWith('.')) base = path.resolve(path.dirname(fromFile), spec);
   else return null; // bare package
   const candidates = [base, ...EXTS.map((e) => base + e), ...EXTS.map((e) => path.join(base!, 'index' + e))];
@@ -108,7 +112,7 @@ function reach(starts: string[]): Map<string, string[]> {
 }
 
 const clientModules = [...mods.values()].filter((m) => m.client).map((m) => m.file);
-const ROUTE_FILE = /^app\/(.*\/)?(page|layout|route|template|loading|error|not-found|default)\.(t|j)sx?$|^app\/(sitemap|robots|manifest)\.(t|j)s$/;
+const ROUTE_FILE = /^apps\/web\/app\/(.*\/)?(page|layout|route|template|loading|error|not-found|default)\.(t|j)sx?$|^apps\/web\/app\/(sitemap|robots|manifest)\.(t|j)s$/;
 const routeEntries = [...mods.keys()].filter((f) => ROUTE_FILE.test(f));
 
 // Per client module: what it reaches. Then invert for audited targets.
@@ -139,7 +143,7 @@ const reports: Report[] = audited.map((target) => {
 });
 
 // Components that no route reaches at all (static).
-const unreachedComponents = [...mods.keys()].filter((f) => f.startsWith('components/') && !routeReach.has(f));
+const unreachedComponents = [...mods.keys()].filter((f) => f.startsWith(`${WEB}/components/`) && !routeReach.has(f));
 
 // ── Bundle markers ──
 function stringLiterals(file: string): string[] {
@@ -156,7 +160,7 @@ function staticFiles(dir: string, out: string[] = []): string[] {
   return out;
 }
 if (process.argv.includes('--bundle')) {
-  const chunks = staticFiles(path.join(ROOT, '.next/static'));
+  const chunks = staticFiles(path.join(ROOT, WEB, '.next/static'));
   if (!chunks.length) { console.error('no .next/static/**/*.js — run `next build` first'); process.exit(2); }
   const contents = chunks.map((f) => [path.relative(ROOT, f), readFileSync(f, 'utf8')] as const);
   for (const r of reports) {

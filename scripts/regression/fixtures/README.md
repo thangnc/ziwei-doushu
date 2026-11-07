@@ -48,6 +48,11 @@ They exist so that later localization and refactoring can show that this output 
 | ICU / tzdata / Unicode | 78.2 / 2026a / 17.0 |
 | iztro / lunar-javascript | 2.6.1 / 1.7.7 at generation (from `package-lock.json` via `npm ci`) |
 
+**Dependency update, 2026-11-07:** iztro was updated to **2.6.5** and lunar-javascript to **1.7.8**.
+- All three fixture bodies stayed **byte-identical** under the new versions: same SHA-256, verified locally and in the canonical container. So the fixtures weren't regenerated.
+- The verifier now prints an informational `ENVIRONMENT MISMATCH` for the `iztro` / `lunarJavascript` metadata. That's expected, and per the rules it never fails a test or triggers a regeneration.
+- The next intentional, reviewed regeneration will refresh the metadata.
+
 **CI uses the same image.** `.github/workflows/ci.yml` runs the `check` job in `container:` with this digest, instead of `setup-node` with `node-version: '22'`, which would float to the newest 22.x and its ICU/tzdata. So the generation and verification environments are identical.
 
 **Local development** uses `.nvmrc` (`22.22.3`) and `package.json` `engines`. Local runs are **Node-runtime-compatible, not environment-identical**: macOS on arm64 is a different OS and architecture. They are for development only; **fixtures are never generated locally.**

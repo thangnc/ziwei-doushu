@@ -52,7 +52,7 @@ function ThemeToggle() {
         transition: 'background 0.35s ease, border-color 0.35s ease',
       }}
     >
-      <div className="relative w-10 h-5 rounded-full flex-shrink-0"
+      <div className="relative w-10 h-5 rounded-full shrink-0"
         style={{
           background: isDark ? 'rgba(12,24,64,0.95)' : 'rgba(230,195,80,0.55)',
           transition: 'background 0.35s ease',
@@ -421,7 +421,7 @@ function FeatureVisual({ index, colors: c }: { index: number; colors: ReturnType
               border: `1px solid ${p.ok ? 'rgba(96,165,250,0.25)' : 'rgba(251,146,60,0.25)'}`,
               background: p.ok ? 'rgba(96,165,250,0.05)' : 'rgba(251,146,60,0.05)',
             }}>
-            <div className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+            <div className="w-1.5 h-1.5 rounded-full shrink-0"
               style={{ background: p.ok ? 'rgba(96,165,250,0.6)' : 'rgba(251,146,60,0.6)' }} />
             <div>
               <div className="text-[11px] font-medium"
@@ -463,7 +463,9 @@ export default function HomePage() {
   }, [c.bgBase]);
 
   return (
-    <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-hidden">
+    <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-clip">
+      {/* overflow-x-clip（不是 hidden）：hidden 会让这个 div 成为滚动容器，framer-motion ≥13.5 的 useScroll
+          改用原生 ViewTimeline 后会绑到这个不滚动的容器上，首屏淡出失效；clip 同样裁掉横向溢出但不产生滚动容器。 */}
       {/* 致用户公告——首次访问全屏覆盖，关闭后才进入首页 */}
       <AnnouncementModal />
 
@@ -484,11 +486,11 @@ export default function HomePage() {
         style={{
           background: c.navBg,
         }}>
-        <div className="text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] font-medium transition-colors duration-300 flex-shrink-0"
+        <div className="text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] font-medium transition-colors duration-300 shrink-0"
           style={{ color: c.goldSolid }}>
           紫微命盘
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <ThemeToggle />
           <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
@@ -714,7 +716,7 @@ export default function HomePage() {
           <div className="text-2xl lg:text-3xl font-bold mb-2 tracking-[0.15em]" style={{ color: c.textPrimary }}>
             倪师方法论 · 渐次展开
           </div>
-          <div className="text-xs lg:text-sm tracking-[0.1em]" style={{ color: c.textMuted }}>
+          <div className="text-xs lg:text-sm tracking-widest" style={{ color: c.textMuted }}>
             从紫微入门，逐步开放天纪 / 地纪 / 人纪学习模块
           </div>
         </FadeIn>
@@ -842,7 +844,7 @@ export default function HomePage() {
                     {feature.points.map((point, j) => (
                       <FadeIn key={j} delay={0.25 + j * 0.08}>
                         <div className="flex gap-3">
-                          <div className="flex-shrink-0 mt-2 w-1 h-1 rounded-full" style={{ background: c.goldSolid, opacity: 0.6 }} />
+                          <div className="shrink-0 mt-2 w-1 h-1 rounded-full" style={{ background: c.goldSolid, opacity: 0.6 }} />
                           <p className="text-sm leading-relaxed" style={{ color: c.textMuted }}>{point}</p>
                         </div>
                       </FadeIn>
@@ -1015,7 +1017,7 @@ export default function HomePage() {
                   className="rounded-xl p-6 h-full"
                   style={{ border: `1px solid ${c.niCardBord}`, background: c.niCardBg, boxShadow: c.niCardShadow }}>
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full border flex items-center justify-center mt-0.5"
+                    <div className="shrink-0 w-5 h-5 rounded-full border flex items-center justify-center mt-0.5"
                       style={{ borderColor: c.goldLine }}>
                       <span className="text-[9px]" style={{ color: c.goldSolid }}>{i + 1}</span>
                     </div>
@@ -1156,7 +1158,7 @@ export default function HomePage() {
                     textDecoration: 'none',
                   }}
                 >
-                  <div className="text-base font-semibold mb-0.5 tracking-[0.1em]"
+                  <div className="text-base font-semibold mb-0.5 tracking-widest"
                     style={{ color: ready ? c.goldSolid : c.textMuted }}>
                     {s.name}
                   </div>

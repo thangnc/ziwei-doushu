@@ -9,7 +9,7 @@
  */
 import assert from 'node:assert/strict';
 import { formToBirthInfo } from '../../lib/ziwei/share';
-import type { BirthFormState } from '../../components/BirthForm';
+import type { BirthFormState } from '../../lib/ziwei/types';
 
 function formAt(clockHour: string, clockMinute: string, longitude: number): BirthFormState {
   return {

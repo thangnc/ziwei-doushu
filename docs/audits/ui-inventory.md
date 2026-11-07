@@ -246,7 +246,7 @@ Most of what a user reads on `/chart` is **not** in `components/`. It comes from
 | `lib/ziwei/patterns.ts` | 641 | 275 | 256 | 44 | 4 | 62 | 4,633 | **Nothing today** (only unwired components import it). In scope once 格局 lands on `/chart`. |
 | `lib/ziwei/famous.ts` | 53 | 42 | 0 | 11 | 0 | 0 | 473 | nothing |
 | `lib/ziwei/school-config.ts` | 65 | 63 | 1 | 1 | 0 | 0 | 411 | nothing. Option labels exist, but no UI imports them; only `DEFAULT_LEAP_MONTH` is used, by `algorithm.ts`. |
-| `lib/ziwei/history.ts` | 5 | 4 | 1 | 0 | 0 | 0 | 5 | nothing (`useHistory` has no importer) |
+| `lib/ziwei/history.ts` | 5 | 4 | 1 | 0 | 0 | 0 | 5 | nothing (`useHistory` has no importer). **Superseded 2026-11-07:** file deleted (unused React hook in the engine); see `docs/architecture/time-model.md` §1.5. |
 | `lib/classics/data/*.ts` | — | — | — | — | — | — | — | Classical text stays Chinese (agreed). **Book and chapter metadata are modern editorial UI text** and need translating: `title`, `dynasty` (`明代`), `author` (`罗洪先 编`, `紫微斗数古籍传承（无确切作者）`), `intro`, and the 21 chapters' `title`/`subtitle` values (e.g. `总论篇`, `十二宫论·命宫`). They appear in `<title>`, breadcrumbs, the TOC and prev/next. |
 
 **Other localization-relevant facts**

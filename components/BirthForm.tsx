@@ -1,25 +1,14 @@
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { BirthInfo } from '@/lib/ziwei/types';
+import type { BirthFormState, BirthInfo } from '@/lib/ziwei/types';
 import { SHICHEN } from '@/lib/ziwei/constants';
 import { useTheme } from '@/components/ThemeProvider';
 import { PROVINCES } from '@/lib/ziwei/cities';
 import { formToBirthInfo, calcTrueSolarBranch } from '@/lib/ziwei/share';
 
-export interface BirthFormState {
-  name: string;
-  year: string;
-  month: string;
-  day: string;
-  clockHour: string;
-  clockMinute: string;
-  unknownTime: boolean;
-  province: string;
-  city: string;
-  longitude: number;
-  gender: 'male' | 'female';
-}
+// The type lives in the engine so lib/ziwei doesn't import from components/.
+export type { BirthFormState };
 
 interface BirthFormProps {
   onSubmit: (info: BirthInfo) => void;

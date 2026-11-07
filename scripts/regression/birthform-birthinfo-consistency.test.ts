@@ -25,7 +25,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { formToBirthInfo } from '../../lib/ziwei/share';
-import type { BirthFormState } from '../../components/BirthForm';
+import type { BirthFormState } from '../../lib/ziwei/types';
 
 const src = readFileSync(new URL('../../components/BirthForm.tsx', import.meta.url), 'utf8');
 

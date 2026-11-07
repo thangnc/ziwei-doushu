@@ -23,6 +23,25 @@ export interface BirthInfo {
   };
 }
 
+/**
+ * Raw birth-form input, before time correction. `formToBirthInfo` (`share.ts`) turns it into a `BirthInfo`.
+ * Defined in the engine, not in `components/BirthForm.tsx`, so `lib/ziwei` never imports from the UI layer;
+ * `BirthForm.tsx` re-exports it for existing UI imports.
+ */
+export interface BirthFormState {
+  name: string;
+  year: string;
+  month: string;
+  day: string;
+  clockHour: string;
+  clockMinute: string;
+  unknownTime: boolean;
+  province: string;
+  city: string;
+  longitude: number;
+  gender: 'male' | 'female';
+}
+
 export interface LunarInfo {
   lunarYear: number;
   lunarMonth: number;    // positive = normal, negative = leap month

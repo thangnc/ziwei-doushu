@@ -8,54 +8,31 @@ on:
 
 jobs:
   check:
-    name: 类型检查 + 排盘回归
+    name: Typecheck + chart regression
     runs-on: ubuntu-latest
-    # 规范环境：与基线 fixture 生成环境逐一致（Node 22.22.3 / npm 10.9.8 / ICU 78.2 / tzdata 2026a，linux/amd64），
-    # 按 digest 固定，避免 node-version '22' 漂到新 patch 带来不同的 ICU / tzdata。
-    # 版本与更换流程见 scripts/regression/fixtures/README.md；.nvmrc 供本地开发对齐。
+    # Canonical environment: identical to the one the baseline fixtures are generated in
+    # (Node 24.22.2 / npm 11.19.1, linux/amd64; ICU and tzdata are recorded in the fixture metadata).
+    # Pinned by digest so a floating node-version '24' can't drift to a new patch with different ICU / tzdata.
+    # Versions and the procedure for changing them: scripts/regression/fixtures/README.md. .nvmrc matches for local development.
     container:
-      image: node:22.22.3-bookworm@sha256:46e94f8cf91baab69a2deb3153e74eeffd73c20c7cc1d8432f5b96469eaa0322
+      image: node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0
     steps:
       - uses: actions/checkout@v4
 
-      # 容器以 root 运行，而 checkout 的工作区归 runner 用户所有，git 会报 dubious ownership；
-      # neutral-naming 测试要调用 git ls-files，因此把工作区标为 git 安全目录。
-      - name: 标记工作区为 git 安全目录
+      # The container runs as root but the checked-out workspace belongs to the runner user, so git reports
+      # "dubious ownership". The neutral-naming test calls git ls-files, so mark the workspace as safe.
+      - name: Mark workspace as a git safe directory
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
-      # 仓库已提交 package-lock.json：按锁定版本安装
-      - name: 安装依赖
+      # package-lock.json is committed: install the locked versions.
+      - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: 类型检查
+      - name: Typecheck
         run: npm run typecheck
 
-      - name: 排盘引擎回归
+      - name: Chart engine regression
         run: npm test
 
-  node24:
-    name: Node 24 兼容性（不阻塞）
-    runs-on: ubuntu-latest
-    # 仅做兼容性检查，不是基线校验环境：失败不影响整个 workflow 的结论。
-    # 基线 body 不一致时请开 issue 排查，绝不据此重生成 fixture；ENVIRONMENT MISMATCH 报告只是信息。
-    # package.json engines 固定 22.22.3，npm ci 会打印 EBADENGINE 警告，属预期。
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: npm
-
-      - name: 安装依赖
-        run: npm ci --no-audit --no-fund
-
-      - name: 类型检查
-        run: npm run typecheck
-
-      - name: 排盘引擎回归
-        run: npm test
-
-      - name: 构建
+      - name: Build
         run: npm run build

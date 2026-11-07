@@ -11,7 +11,7 @@ Open-source boundary (from README §七): the interpretation database (`lib/ziwe
 ## Commands
 
 ```bash
-npm ci                 # install from package-lock.json (CI uses Node 22)
+npm ci                 # install from package-lock.json (CI uses Node 24)
 npm run dev            # next dev
 npm run build
 npm run typecheck      # tsc --noEmit

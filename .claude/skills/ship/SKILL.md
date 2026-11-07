@@ -40,8 +40,7 @@ Rules: `.claude/rules/workflow.md` (Verify, Scope, Worktrees, Git, Privacy). Run
      - the user's notes, if any
    - End the body with the PR attribution lines this session uses.
 7. **Watch CI** until the runs for the head commit complete. Report each job.
-   - "类型检查 + 排盘回归" (typecheck + chart regression) is the required check.
-   - The Node 24 job is non-blocking.
+   - There is one job, "Typecheck + chart regression" (Node 24 container). It must pass before merging.
    - On a failure, read the failed log (`gh run view <id> --repo thangnc/ziwei-doushu --log-failed`) and fix it in this worktree.
 8. **Stop and report.** Give the PR link and the CI result.
    - Don't merge unless the user asks.

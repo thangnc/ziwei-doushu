@@ -1,7 +1,7 @@
 /**
  * 显式生成基线 fixture。没有 --write 时拒绝运行，测试永远不会调用本脚本。
  *
- * 规范环境（canonical）：node:22.22.3-bookworm（linux/amd64，按 digest 固定），见 fixtures/README.md。
+ * 规范环境（canonical）：node:24.22.2-bookworm（linux/amd64，按 digest 固定），见 fixtures/README.md。
  *   在其他环境生成的 fixture 必须在 README 与提交说明里标注为 non-canonical。
  *
  * 用法：npx tsx scripts/regression/fixtures/generate-baselines.ts --write [--out <dir>]

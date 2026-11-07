@@ -42,6 +42,8 @@ No bulk deletion. Keep the inventory (`UI_INVENTORY.md` §5) and decide keep / w
 ### D-7 Node 26
 No extra CI job for now. **Node 22.22.3** stays the canonical runtime (see `scripts/regression/fixtures/README.md`).
 
+**Superseded 2026-11-07:** the canonical runtime is now **Node 24.22.2** (pinned container), and CI runs only on it. The three baseline bodies were byte-identical when regenerated there. See `scripts/regression/fixtures/README.md`.
+
 ### D-8 Leap-month bug
 `generateChart` throws for 2017-08-21 (闰六月三十) under `origin-month`: "only 29 days in lunar year 2017 month 6". It gets a **separate issue and an isolated bugfix PR**, with a regression test and a check that unrelated baseline output is unchanged. It is **not** mixed with localization work.
 

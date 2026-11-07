@@ -5,21 +5,21 @@
   "records": 1440,
   "bodyBytes": 11915644,
   "bodySha256": "9685ea2c2ffa33218ba1f26ad9e4f5a809dddb5446e5d15a1613f43eebc5f5ec",
-  "gitCommit": "a600484a49255039d0725f1ba9e11ca81a948f97+uncommitted-phase0",
-  "generatedAt": "2026-11-06T18:18:35.719Z",
+  "gitCommit": "4d01a01a76249e8f7616b23dfc70423ff82ed0ea+node24-canonical",
+  "generatedAt": "2026-11-07T08:03:12.558Z",
   "environment": {
-    "node": "v22.22.3",
-    "npm": "10.9.8",
-    "icu": "78.2",
-    "tz": "2026a",
+    "node": "v24.22.2",
+    "npm": "11.19.1",
+    "icu": "78.3",
+    "tz": "2026e",
     "unicode": "17.0",
     "platform": "linux",
     "osRelease": "7.2.12-orbstack-00394-gbecdd6130068",
     "arch": "x64",
-    "containerImage": "node:22.22.3-bookworm@sha256:46e94f8cf91baab69a2deb3153e74eeffd73c20c7cc1d8432f5b96469eaa0322",
+    "containerImage": "node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0",
     "runtime": "container",
-    "iztro": "2.6.1",
-    "lunarJavascript": "1.7.7"
+    "iztro": "2.6.5",
+    "lunarJavascript": "1.7.8"
   },
   "storedBytes": 451554
 }

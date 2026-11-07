@@ -8,10 +8,14 @@
 // 2. One Node version everywhere. The baseline fixtures are only valid in the canonical runtime
 //    (scripts/regression/fixtures/README.md), so `.nvmrc`, package.json `engines.node` and the
 //    `node:<version>` tag of every workflow `container: image:` must name the same version.
+// 3. Knowledge-base format. Every docs/solutions/<category>/*.md follows the schema in
+//    docs/solutions/README.md: a known category directory, the required frontmatter keys with
+//    valid values, and the required sections. Claude greps this frontmatter to find prior fixes,
+//    so a drifted file is a lesson nobody finds.
 //
 // Node standard library only; run from the repository root: node .github/scripts/check-repo-guards.mjs
 
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const errors = [];
@@ -75,6 +79,88 @@ for (const { where, version } of versions) {
   if (version !== expected) errors.push(`${where} names Node ${version}, but .nvmrc names ${expected}`);
 }
 if (versions.length < 3) errors.push(`no "image: node:<version>" container found under ${WORKFLOW_DIR}`);
+
+// --- 3. Knowledge-base format ----------------------------------------------------------------
+
+// Keep these lists in sync with docs/solutions/README.md.
+const SOLUTIONS_DIR = 'docs/solutions';
+const CATEGORIES = ['engine', 'time', 'baselines', 'ci', 'workflow', 'docs'];
+const PROBLEM_TYPES = ['bug', 'convention', 'tooling', 'workflow', 'docs'];
+const SEVERITIES = ['low', 'medium', 'high'];
+const REQUIRED_KEYS = ['title', 'date', 'category', 'module', 'problem_type', 'severity', 'tags'];
+const REQUIRED_SECTIONS = ['## Problem', '## Root cause', '## Solution', '## Prevention'];
+
+// Minimal frontmatter reader: `key: value` lines between the first two `---` lines. Values may be
+// quoted strings or `[a, b]` lists; `#` comments are not supported, because values such as
+// "PR #4" contain `#`. No YAML dependency, on purpose (see the header).
+function readFrontmatter(text) {
+  const lines = text.split('\n');
+  if (lines[0].trim() !== '---') return null;
+  const end = lines.indexOf('---', 1);
+  if (end < 0) return null;
+  const data = {};
+  for (const line of lines.slice(1, end)) {
+    const match = /^([A-Za-z_]+):\s*(.*?)\s*$/.exec(line);
+    if (!match) continue;
+    let value = match[2];
+    if (value.startsWith('[') && value.endsWith(']')) {
+      value = value.slice(1, -1).split(',').map((v) => v.trim().replace(/^["']|["']$/g, '')).filter(Boolean);
+    } else {
+      value = value.replace(/^["']|["']$/g, '');
+    }
+    data[match[1]] = value;
+  }
+  return { data, body: lines.slice(end + 1).join('\n') };
+}
+
+let solutionCount = 0;
+if (existsSync(SOLUTIONS_DIR)) {
+  for (const entry of readdirSync(SOLUTIONS_DIR).sort()) {
+    const path = `${SOLUTIONS_DIR}/${entry}`;
+    if (!statSync(path).isDirectory()) {
+      if (entry !== 'README.md') errors.push(`${path} is outside a category directory: move it to ${SOLUTIONS_DIR}/<category>/`);
+      continue;
+    }
+    if (!CATEGORIES.includes(entry)) {
+      errors.push(`${path}/ is not a known category (${CATEGORIES.join(', ')}); add it to docs/solutions/README.md and this script first`);
+      continue;
+    }
+    for (const name of readdirSync(path).sort()) {
+      const file = `${path}/${name}`;
+      if (!name.endsWith('.md')) {
+        errors.push(`${file} is not a Markdown file`);
+        continue;
+      }
+      solutionCount += 1;
+      const parsed = readFrontmatter(readFileSync(file, 'utf8'));
+      if (!parsed) {
+        errors.push(`${file} has no frontmatter block (--- … ---) at the top`);
+        continue;
+      }
+      const { data, body } = parsed;
+      for (const key of REQUIRED_KEYS) {
+        const value = data[key];
+        if (value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) {
+          errors.push(`${file} is missing frontmatter "${key}"`);
+        }
+      }
+      if (data.date && !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) errors.push(`${file} has date "${data.date}"; expected YYYY-MM-DD`);
+      if (data.category && data.category !== entry) errors.push(`${file} has category "${data.category}" but sits in ${path}/`);
+      if (data.problem_type && !PROBLEM_TYPES.includes(data.problem_type)) {
+        errors.push(`${file} has problem_type "${data.problem_type}"; expected one of ${PROBLEM_TYPES.join(', ')}`);
+      }
+      if (data.severity && !SEVERITIES.includes(data.severity)) {
+        errors.push(`${file} has severity "${data.severity}"; expected one of ${SEVERITIES.join(', ')}`);
+      }
+      if (data.tags !== undefined && !Array.isArray(data.tags)) errors.push(`${file} has tags that are not a [list]`);
+      const headings = body.split('\n').map((l) => l.trim());
+      for (const section of REQUIRED_SECTIONS) {
+        if (!headings.includes(section)) errors.push(`${file} is missing the "${section}" section`);
+      }
+    }
+  }
+}
+console.log(`Knowledge base: ${solutionCount} solution doc(s) checked.`);
 
 // --- Result ----------------------------------------------------------------------------------
 

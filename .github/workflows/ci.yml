@@ -36,7 +36,7 @@ jobs:
           persist-credentials: false
 
       # No install needed: Node standard library only.
-      - name: Regression tests registered, Node versions consistent
+      - name: Regression tests registered, Node versions consistent, knowledge-base format
         run: node .github/scripts/check-repo-guards.mjs
 
   typecheck:

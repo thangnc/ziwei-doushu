@@ -82,6 +82,7 @@ The build rewrote `next-env.d.ts` from `.next/dev/types/...` to `.next/types/...
   2. It passes the finished, serializable display data to a client `PatternsCard` as props.
   3. No client module imports `patterns.ts` or any rule module.
 - **Enforcement:** `dependency-graph.ts` becomes a regression test that fails when any `server-only` module is **reachable-from-client-source**. The bundle-marker search stays a second check only.
+  - **Update 2026-11-08:** a narrower check now runs in CI. `scripts/regression/engine-import-boundary.test.ts` fails if `lib/ziwei` imports anything outside itself except `iztro`, `lunar-javascript` and `server-only`, or references `window`, `document`, `localStorage`, `sessionStorage` or `navigator`. The `server-only` reachability test above is still to do, because the unused `ChartSummary` / `PatternsCard` still violate it (D-4).
 
 ### Canonical `/chart` request flow (target)
 

@@ -105,6 +105,8 @@ Per the plan these are recorded, not fixed (see §6, decision Q-2).
 
 **Neither is used today.** A repo-wide grep finds no importer of `useHistory`, `formToSearchParams` or `searchParamsToForm` outside their own files. In this repository they are dormant code. Entries may still exist in a deployment that uses them (the closed-source production site); that can't be verified from this repo. The migration rules in §4.4 apply to any such data.
 
+**Superseded 2026-11-07:** `lib/ziwei/history.ts` (the unused `useHistory` hook) was deleted, so the `lib/ziwei` engine no longer contains React code. `BirthFormState` moved to `lib/ziwei/types.ts`, and `components/BirthForm.tsx` re-exports it. The `history.ts` line references in this section, §4.3 and Q-9 point to the file as it stood at commit `682a61b`. The `ziwei_history` entry shape and the §4.4 migration rules still describe any data a deployment may hold.
+
 ### 1.6 Probe: form path (mean, +480) vs `calculateTrueSolarTime` (true, +480)
 
 Script `mean-vs-true.ts`, run with `tsx` under Node 22.22.3 against the real `share.ts`, `true-solar-time.ts` and `cities.ts`. In the output below, "form" = `formToBirthInfo`, and "TST" = `calculateTrueSolarTime({ …, utcOffsetMinutes: 480 })` + `resolveZiweiDayOffset`. Longitudes come from `lib/ziwei/cities.ts:25` (北京 116.4) and `:628` (乌鲁木齐 87.6).

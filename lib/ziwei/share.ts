@@ -1,5 +1,4 @@
-import type { BirthFormState } from '@/components/BirthForm';
-import type { BirthInfo } from './types';
+import type { BirthFormState, BirthInfo } from './types';
 import { branchFromSolarMinutes, resolveZiweiDayOffset, shiftGregorianDate } from './true-solar-time';
 
 /** 根据北京时间 + 经度计算真太阳时时辰支 (0-11) */

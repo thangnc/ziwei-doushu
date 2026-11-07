@@ -2,8 +2,7 @@ import assert from 'node:assert/strict';
 import { BRANCHES } from '../../lib/ziwei/constants';
 import { generateChart } from '../../lib/ziwei/algorithm';
 import { formToBirthInfo } from '../../lib/ziwei/share';
-import type { BirthInfo } from '../../lib/ziwei/types';
-import type { BirthFormState } from '../../components/BirthForm';
+import type { BirthFormState, BirthInfo } from '../../lib/ziwei/types';
 
 const EXPECTED_BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
 const baseBirthInfo: BirthInfo = {

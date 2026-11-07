@@ -101,7 +101,7 @@ This needs no `/api` route and no API key. The repo rule "no backend" (`.claude/
 
 ## 4. Privacy threat model (documented only; implementation is Phase 3/4)
 
-**Today:** charts are generated in the browser, so birth data doesn't reach this app's server. `formToSearchParams`, `searchParamsToForm` and `useHistory` exist in `lib/` but **no route calls them** (`grep` of `app/` and `components/`, 2026-11-07). The target architecture **introduces** server-side processing, so the risks below are new.
+**Today:** charts are generated in the browser, so birth data doesn't reach this app's server. `formToSearchParams`, `searchParamsToForm` and `useHistory` exist in `lib/` but **no route calls them** (`grep` of `app/` and `components/`, 2026-11-07). (**Superseded 2026-11-07:** `useHistory` and its file `lib/ziwei/history.ts` were deleted.) The target architecture **introduces** server-side processing, so the risks below are new.
 
 | Exposure | GET `/chart?y=…&h=…&lng=…` | POST / server action (recommended) |
 |---|---|---|

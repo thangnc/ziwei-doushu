@@ -13,7 +13,7 @@ paths:
 - Engine logic belongs in `lib/ziwei/`, not in components. When a component needs a derived value (a 大限 index, a 四化 lookup), use or add a helper in `yunxian-context.ts`/`sihua.ts`.
 - `localStorage` access is wrapped in `try/catch` and must fail silently (see `history.ts`, `school-config.ts`). Never assume it exists during SSR; read it in `useEffect`.
 - The UI is bilingual: Vietnamese (default) and Chinese, with the language chosen by the `ziwei-locale` cookie (`lib/i18n/`). **Put new or changed UI strings in `lib/i18n/messages/zh.ts` and `vi.ts`**, not hard-coded. Use `useT()` in client components and `getT()` on the server.
-  - Vietnamese follows `lib/i18n/README.md`: Hán-Việt only for specialist terms marked Verified in `TERMINOLOGY_AUDIT.md`; natural Vietnamese for ordinary UI; no Disputed terms (`DECISIONS.md` D-1).
+  - Vietnamese follows `lib/i18n/README.md`: Hán-Việt only for specialist terms marked Verified in `docs/audits/terminology-audit.md`; natural Vietnamese for ordinary UI; no Disputed terms (`docs/decisions/localization.md` D-1).
   - Pages not localized yet still have hard-coded Chinese. Localize them in their planned phase, not while working on something else.
   - Never translate engine identifiers. Chart terms are localized only for display.
 - The layout must keep working on narrow screens (the chart grid stacks below `lg`, see #35). Check mobile width when changing the layout.

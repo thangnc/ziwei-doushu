@@ -2,7 +2,7 @@
  * 中文消息（源语言，键的唯一来源）。vi.ts 必须 `satisfies Messages`，缺键 / 多键都过不了 tsc。
  *
  * Phase 1 只收站点级文案（metadata、语言切换器）。页面 / 命盘术语的本地化在后续阶段，按审定的
- * TERMINOLOGY_AUDIT.md 与 UI_INVENTORY.md 进行；不要在这里提前加命盘术语。
+ * docs/audits/terminology-audit.md 与 docs/audits/ui-inventory.md 进行；不要在这里提前加命盘术语。
  *
  * meta.* 与 app/layout.tsx 原有 metadata 逐字一致 —— 中文站点的 metadata 不得因本地化而改变。
  */

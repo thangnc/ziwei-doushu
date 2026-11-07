@@ -1,6 +1,7 @@
 ---
 paths:
-  - "docs/**"
+  - "docs/tianji-ziwei/**"
+  - "docs/*.png"
   - "lib/classics/**"
   - "lib/nihai/**"
   - "lib/seo/**"

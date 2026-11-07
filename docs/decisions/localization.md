@@ -5,10 +5,10 @@ Decisions made on the Vietnamese localization, with dates. **They bind later pha
 ## 2026-11-07: Phase 0 accepted and closed
 
 Phase 0 deliverables:
-- `lib/i18n/TERMINOLOGY_AUDIT.md`
-- `lib/i18n/UI_INVENTORY.md`
-- `lib/ziwei/TIME_MODEL.md`
-- `lib/ziwei/ENGINE_PROTECTION.md`
+- `docs/audits/terminology-audit.md`
+- `docs/audits/ui-inventory.md`
+- `docs/architecture/time-model.md`
+- `docs/architecture/engine-protection.md`
 - `scripts/regression/fixtures/` (baselines, canonical container, CI verification)
 
 ### D-1 Terminology
@@ -26,7 +26,7 @@ Phase 0 deliverables:
 - Keep the **exact IANA ID the user entered**, e.g. `Asia/Ho_Chi_Minh`. ICU's `resolvedOptions()` canonicalises it to `Asia/Saigon`, so don't take the ID from there.
 
 ### D-4 Unused components
-No bulk deletion. Keep the inventory (`UI_INVENTORY.md` §5) and decide keep / wire in / delete **per component**, in the UI phase concerned.
+No bulk deletion. Keep the inventory (`docs/audits/ui-inventory.md` §5) and decide keep / wire in / delete **per component**, in the UI phase concerned.
 
 ### D-5 Privacy
 - Approved: a **POST / server action** for normal chart generation.

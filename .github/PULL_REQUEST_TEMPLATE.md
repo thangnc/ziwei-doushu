@@ -1,10 +1,10 @@
-## 改了什么、为什么
+## What changed and why
 
-<!-- 一两句话说清楚。关联的 issue 写成 #编号 -->
+<!-- One or two sentences. Link related issues as #number. -->
 
-## 自查
+## Checklist
 
-- [ ] 本地跑过 `npm run typecheck` 和 `npm test`，都通过
-- [ ] 改了排盘结果的，附上对照证据（出处，或其他排盘软件的截图），并在 `scripts/regression/` 加了回归测试、登记到 `package.json` 的 `test`
-- [ ] 一个 PR 只做一件事
-- [ ] 没有提交 `.env.local`、密钥、他人的出生信息等隐私数据
+- [ ] `npm run typecheck` and `npm test` pass locally
+- [ ] If chart results changed: evidence is attached (a cited source, or a screenshot from other charting software), and a regression test is added under `scripts/regression/` and registered in the `test` script in `package.json`
+- [ ] This PR makes one change
+- [ ] No `.env.local`, keys, other people's birth data or other private data are committed

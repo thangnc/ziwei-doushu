@@ -1,65 +1,65 @@
-name: 排盘结果疑问 / Chart result question
-description: 觉得某张盘排得不对？请附上出生信息和对照结果，我们才能逐项核。
-title: "[排盘疑问] "
+name: Chart result question / 排盘结果疑问
+description: Think a chart is wrong? Include the birth data and a reference result so we can check it item by item.
+title: "[Chart question] "
 labels: ["question"]
 body:
   - type: markdown
     attributes:
       value: |
-        只写「不准」我们没法查。请按下面填完整，我们会逐项对照。
-        先看一眼：辅星亮度、闰月归属、晚子时是否换日在各流派本来就不同，这类差异不算 bug，但仍欢迎指出。
+        A bare "it's inaccurate" can't be investigated. Please fill in everything below and we'll compare item by item.
+        Note: supporting-star brightness, leap-month assignment and whether the late 子时 changes the day differ between schools by design. Such differences aren't bugs, but pointing them out is still welcome.
   - type: input
     id: date
     attributes:
-      label: 出生日期（公历）
-      placeholder: 例：1990-05-12
+      label: Birth date (Gregorian)
+      placeholder: "e.g. 1990-05-12"
     validations:
       required: true
   - type: input
     id: time
     attributes:
-      label: 出生时间（几点几分）
-      placeholder: 例：08:30
+      label: Birth time (hour and minute)
+      placeholder: "e.g. 08:30"
     validations:
       required: true
   - type: input
     id: place
     attributes:
-      label: 出生地或经度
-      description: 用来换算真太阳时；东西向经度差最多能差出一个时辰。
-      placeholder: 例：浙江杭州 / 东经 120.2°
+      label: Birthplace or longitude
+      description: Used for the true-solar-time correction; an east–west longitude difference can shift the result by up to one 时辰.
+      placeholder: "e.g. Hangzhou, Zhejiang / 120.2° E"
   - type: dropdown
     id: gender
     attributes:
-      label: 性别
-      options: ["男", "女"]
+      label: Gender
+      options: ["Male", "Female"]
     validations:
       required: true
   - type: textarea
     id: ours
     attributes:
-      label: 本项目排出的结果
-      description: 截图，或贴出 generateChart 输出里相关的那几项。
+      label: This project's result
+      description: A screenshot, or the relevant fields from the generateChart output.
     validations:
       required: true
   - type: input
     id: ref
     attributes:
-      label: 拿什么对照
-      placeholder: 例：其它排盘软件 / 某本书第几页
+      label: What you compared against
+      placeholder: "e.g. other charting software / a book and page number"
     validations:
       required: true
   - type: textarea
     id: theirs
     attributes:
-      label: 对照结果
-      description: 截图或文字。
+      label: Reference result
+      description: A screenshot or text.
     validations:
       required: true
   - type: textarea
     id: diff
     attributes:
-      label: 具体哪一项不一致
-      placeholder: 例：命宫应在卯，这里排在戌
+      label: Which item differs
+      placeholder: "e.g. the 命宫 should be in 卯, but it's placed in 戌 here"
     validations:
       required: true

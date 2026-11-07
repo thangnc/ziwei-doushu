@@ -39,6 +39,7 @@ The engine is what this repo exists for. Every change to it can silently change 
 
 ## Comments
 
-Match the existing style. A correction to engine behaviour gets a dated note that names its source, in Chinese, e.g.
-`// ★ 2026-11-07 修正：<what changed>（依据：《全书》<passage> / 金标准盘 <n> 张）`
+Write new comments in English; existing Chinese comments stay unless translating them is the task. A correction to engine behaviour gets a dated note that names its source, e.g.
+`// ★ 2026-11-07 fix: <what changed> (source: 《全书》<passage> / <n> reference charts)`
+Keep chart identifiers (star and palace names, 四化, 大限) in Chinese inside the English text.
 Explain *why* and *on what authority*; the code already shows *what*.

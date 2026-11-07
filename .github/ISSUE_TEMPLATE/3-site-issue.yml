@@ -1,28 +1,28 @@
-name: 正式站问题 / ouranic.cn issue
-description: 线上网站（ouranic.cn）登录、支付、显示等问题
+name: ouranic.cn issue / 正式站问题
+description: Problems with the live site (ouranic.cn), such as login, payment or display
 labels: ["bug"]
 body:
   - type: input
     id: url
     attributes:
-      label: 出问题的页面地址
-      placeholder: https://ouranic.cn/……
+      label: URL of the affected page
+      placeholder: https://ouranic.cn/…
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: 怎么出现的
-      placeholder: 点了什么、填了什么、看到什么报错
+      label: How it happened
+      placeholder: What you clicked or entered, and what error you saw
     validations:
       required: true
   - type: input
     id: env
     attributes:
-      label: 浏览器与系统
-      placeholder: 例：Windows 11 / Chrome 153 / 公司网络开了代理
+      label: Browser and OS
+      placeholder: "e.g. Windows 11 / Chrome 153 / behind a corporate proxy"
   - type: textarea
     id: screenshot
     attributes:
-      label: 截图
-      description: 请勿贴出手机号、验证码、他人的生辰等隐私信息。
+      label: Screenshot
+      description: Please don't include phone numbers, verification codes, other people's birth data or other private information.

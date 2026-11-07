@@ -2,6 +2,9 @@
 import { motion } from 'framer-motion';
 import { STEMS, SI_HUA_TABLE } from '@ziwei/engine/constants';
 import type { ZiweiChart } from '@ziwei/engine/types';
+import { useLocale } from '@/components/LocaleProvider';
+import Term from '@/components/Term';
+import { presentSiHuaCompound, presentTerm } from '@/lib/i18n/terms';
 
 export type TimeView = 'mingpan' | 'daxian' | 'liunian';
 
@@ -45,6 +48,8 @@ export default function TimeNav({
   onYearChange,
 }: TimeNavProps) {
   const currentDx = chart.daXians[chart.currentDaXianIndex];
+  const { locale, t } = useLocale();
+  const daxianLabel = presentTerm(locale, 'yunxianLabel', '大限');
 
   // 计算当前叠加四化信息
   const getOverlayInfo = (): { stemName: string; overlay: Record<string, string> } | null => {
@@ -85,7 +90,7 @@ export default function TimeNav({
           active={view === 'mingpan'}
           onClick={() => onViewChange('mingpan')}
         >
-          本命
+          <Term term={presentTerm(locale, 'yunxianLabel', '本命')} />
         </TabButton>
 
         {/* 大限 */}
@@ -93,7 +98,8 @@ export default function TimeNav({
           active={view === 'daxian'}
           onClick={() => onViewChange('daxian')}
         >
-          {currentDx ? `大限 ${currentDx.startAge}–${currentDx.endAge}` : '大限'}
+          <Term term={daxianLabel} />
+          {currentDx ? ` ${currentDx.startAge}–${currentDx.endAge}` : ''}
         </TabButton>
 
         {/* 流年 — 含年份切换 */}
@@ -113,7 +119,7 @@ export default function TimeNav({
             className="text-[10px] font-medium flex-1 text-center"
             style={{ color: view === 'liunian' ? 'var(--t-gold)' : 'var(--t-faint)' }}
           >
-            流年
+            <Term term={presentTerm(locale, 'yunxianLabel', '流年')} />
           </button>
           {/* 年份 +/- */}
           <div className="flex items-center gap-0.5">
@@ -151,14 +157,20 @@ export default function TimeNav({
           className="flex items-center gap-2 mt-1.5 px-1 flex-wrap"
         >
           <span className="text-[9px]" style={{ color: 'var(--t-faint)' }}>
-            {view === 'daxian' ? '大限' : `${liunianYear}`}·{overlayInfo.stemName}年四化：
+            {t('timeNav.overlayLine', {
+              period: view === 'daxian' ? daxianLabel.text : `${liunianYear}`,
+              stem: presentTerm(locale, 'stem', overlayInfo.stemName).text,
+            })}
           </span>
           {(['禄', '权', '科', '忌'] as const).map(sh => {
             const starName = Object.keys(overlayInfo.overlay).find(k => overlayInfo.overlay[k] === sh);
             if (!starName) return null;
             return (
               <span key={sh} className="text-[9px] font-medium" style={{ color: SIHUA_COLORS[sh] }}>
-                {starName}化{sh}
+                {/* zh: 「天同化禄」 (no space, as before); vi: "Thiên Đồng Hóa Lộc" */}
+                <Term term={presentTerm(locale, 'star', starName)} />
+                {locale === 'zh' ? '' : ' '}
+                <Term term={presentSiHuaCompound(locale, sh)} />
               </span>
             );
           })}

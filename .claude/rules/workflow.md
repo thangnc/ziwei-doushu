@@ -6,6 +6,11 @@
 - If chart output changed, state what changed (from the `chart-diff-reviewer` agent or a sweep diff), and that the change was intended.
 - If the change is in the UI, say whether you looked at it in the browser. If you didn't, say so.
 
+## Knowledge base
+
+- Before changing an area, read its doc from the `CLAUDE.md` knowledge map and search `docs/solutions/` for a prior fix.
+- When a fix teaches something durable (a root cause that wasn't obvious, a trap, a convention), record it with `/record-solution` in the same PR. The repo, not personal memory, is the record.
+
 ## Scope
 
 - One change per task and per PR, as CONTRIBUTING.md asks. Don't bundle refactors, reformatting or "while I'm here" fixes into a bug fix; mention them instead.

@@ -9,6 +9,7 @@ The engine is what this repo exists for. Every change to it can silently change 
 
 ## Before changing anything
 
+- **Read the record first.** Birth-time, true-solar-time and timezone work: `docs/architecture/time-model.md`. Imports, `server-only`, the client bundle and privacy: `docs/architecture/engine-protection.md`. Then search `docs/solutions/` for the module you're changing (`grep -rl "module: lib/ziwei/<file>" docs/solutions`).
 - **Measure, don't reason.** Run the `chart` skill on the inputs the change affects, both before and after the change. Before you call the change done, use the `chart-diff-reviewer` agent, or diff the output of `chart.ts --sweep`.
 - **Any change to chart output needs evidence**: a passage from 《紫微斗数全书》/《全集》/《骨髓赋》, a 《天纪》 time code, or a reference chart from other charting software. If the user can't supply one, stop and ask. Don't "fix" a chart from memory of how charting works.
 - **Points where schools differ are options, not fixes.** Supporting-star brightness, leap-month assignment, the late-子时 day change, 天马, 截空, 魁钺, 庚年四化 and 长生 differ between schools. Add or extend an option in `school-config.ts` / `generateChart` `opts`; don't overwrite the default. Change a default only on an explicit decision, and record it in a comment.

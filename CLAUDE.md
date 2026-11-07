@@ -33,6 +33,19 @@ The committed `tsconfig.json` and `next-env.d.ts` are what `next build` writes, 
 
 To reproduce CI exactly, run the steps in the digest-pinned image from `ci.yml` with `docker run --platform linux/amd64` on a copy of the repo. `neutral-naming.test.ts` calls `git ls-files`, so the copy needs a git index; a worktree's `.git` is only a pointer file, so run `git init && git add -A` inside the copy. Regenerate `package-lock.json` (hand edits are blocked by a hook) with `npm install --package-lock-only` in that same image, so the npm version matches.
 
+## Knowledge map
+
+Read the doc for the area before changing it. `docs/README.md` indexes everything under `docs/`.
+
+| Area | Read first | Check |
+|---|---|---|
+| Engine (`lib/ziwei/`) | `docs/architecture/time-model.md` (birth time), `docs/architecture/engine-protection.md` (imports, bundle, privacy), `docs/solutions/` categories `engine` and `time` (none recorded yet) | `chart-diff-reviewer`, `npm test` |
+| Baselines | `scripts/regression/fixtures/README.md`, `docs/solutions/baselines/` | `npm test` (3 baseline bodies) |
+| i18n and UI | `lib/i18n/README.md`, `docs/decisions/localization.md`, `docs/audits/terminology-audit.md`, `docs/audits/ui-inventory.md` | `npm run build` |
+| CI, git, worktrees, hooks | `docs/solutions/ci/`, `docs/solutions/workflow/` | `node .github/scripts/check-repo-guards.mjs` |
+
+**Prior fixes:** `docs/solutions/<category>/` holds one lesson per file (problem, root cause, solution, prevention) with greppable frontmatter (`module`, `tags`, `problem_type`). Search it when an area has a prior fix, e.g. `grep -rl "module: lib/ziwei/share.ts" docs/solutions`. When a fix teaches a durable lesson, record it with `/record-solution` in the same PR; the repo, not personal memory, is the record. Schema and rules: `docs/solutions/README.md`.
+
 ## Engine architecture (`lib/ziwei/`)
 
 **Entry point:** `generateChart(birthInfo, { leapMonth? })` in `algorithm.ts` returns a `ZiweiChart`. It wraps **iztro** (`astro.bySolar`, or `astro.byLunar` for leap-month policies) and then post-processes the result:
@@ -65,4 +78,5 @@ Detailed rules are in `.claude/rules/`. Most load only when Claude works on matc
 - `engine.md` (`lib/ziwei/**`): evidence required for any change to chart output, school options instead of hard-coded fixes, engine invariants.
 - `regression-tests.md` (`scripts/regression/**`, `package.json`): test house style and registration.
 - `demo-ui.md` (`app/**`, `components/**`): no backend, no `server-only` modules in client components.
+- `knowledge-base.md` (`docs/solutions/`, `docs/architecture/`, `docs/decisions/`, `docs/audits/`): the solution-doc format, update instead of duplicate, dated supersede notes, back-links from code.
 - `content-and-licensing.md` (`docs/tianji-ziwei/`, classics, README): exact quotations, separate licences, keeping both READMEs in sync (`README.md` English by default, `README.zh-CN.md` Chinese).

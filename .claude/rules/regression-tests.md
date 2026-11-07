@@ -16,3 +16,9 @@ paths:
 - Keep each test fast (well under a few seconds); the whole suite runs on every Stop hook and in CI. Sample input combinations instead of looping over every date.
 - Tests that switch brightness school or other global state must restore it at the end.
 - Use only synthetic birth data or published sample charts from `famous.ts`. Never use a real private person's birth data.
+
+## Change-detector baselines (`scripts/regression/fixtures/`)
+
+- `engine-baseline`, `patterns-baseline` and `birthtime-baseline` are a deliberate exception to the "no snapshots" rule. They detect **any** change in engine output during localization and refactoring; they don't prove correctness. Never use them as the source of expected values in other tests.
+- Tests compare **only the body**. Environment metadata (Node, ICU, tzdata, OS, git) produces an informational report, never a failure.
+- **Never regenerate a fixture to make a test pass.** A body mismatch needs investigating. Regenerate only with `generate-baselines.ts --write`, in the canonical container from `fixtures/README.md`, alongside a `chart-diff-reviewer` report and evidence for the change. Tests and hooks never write fixtures.

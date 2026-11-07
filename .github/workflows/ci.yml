@@ -10,15 +10,20 @@ jobs:
   check:
     name: 类型检查 + 排盘回归
     runs-on: ubuntu-latest
+    # 规范环境：与基线 fixture 生成环境逐一致（Node 22.22.3 / npm 10.9.8 / ICU 78.2 / tzdata 2026a，linux/amd64），
+    # 按 digest 固定，避免 node-version '22' 漂到新 patch 带来不同的 ICU / tzdata。
+    # 版本与更换流程见 scripts/regression/fixtures/README.md；.nvmrc 供本地开发对齐。
+    container:
+      image: node:22.22.3-bookworm@sha256:46e94f8cf91baab69a2deb3153e74eeffd73c20c7cc1d8432f5b96469eaa0322
     steps:
       - uses: actions/checkout@v4
 
-      # 仓库已提交 package-lock.json：按锁定版本安装，并开 npm 缓存
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
+      # 容器以 root 运行，而 checkout 的工作区归 runner 用户所有，git 会报 dubious ownership；
+      # neutral-naming 测试要调用 git ls-files，因此把工作区标为 git 安全目录。
+      - name: 标记工作区为 git 安全目录
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
+      # 仓库已提交 package-lock.json：按锁定版本安装
       - name: 安装依赖
         run: npm ci --no-audit --no-fund
 

@@ -91,6 +91,7 @@
 :root {
   /* 字体 */
   --font: -apple-system, 'PingFang SC', 'Helvetica Neue', 'Segoe UI', sans-serif;
+  --font-serif: 'STSong', 'Songti SC', 'SimSun', serif;
   --font-mono: 'SF Mono', 'Menlo', 'Noto Sans Mono', 'Consolas', monospace;
 
   /* 背景层级 */
@@ -177,6 +178,16 @@
 
 /* ─── 全局基础 ───────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
+
+/* ─── 越南语界面字体（lang 由 app/layout.tsx 按语言 cookie 设置）───────────────
+   Be Vietnam Pro / Noto Serif 由 next/font 加载（含 vietnamese 子集），中文字体栈保留为后备，
+   以便越南语页面里仍出现的汉字（古籍原文、尚未本地化的页面）正常显示。
+   中文界面（lang="zh-CN"）不受影响：--font 仍是原值。
+   组件里写死的 17 处 inline fontFamily 留到各页面本地化时改用这些变量（见 lib/i18n/README.md）。 */
+:root[lang="vi"] {
+  --font: var(--font-be-vietnam-pro), -apple-system, 'PingFang SC', 'Helvetica Neue', 'Segoe UI', sans-serif;
+  --font-serif: var(--font-noto-serif), 'STSong', 'Songti SC', 'SimSun', serif;
+}
 
 html {
   background: var(--bg-0);

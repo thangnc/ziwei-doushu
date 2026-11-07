@@ -29,7 +29,9 @@ To inspect a real chart instead of reasoning about engine output, run `npx tsx .
 
 Remotes: `origin` is the fork `thangnc/ziwei-doushu`, where PRs go; `upstream` is `Renhuai123/ziwei-doushu`.
 
-`next dev` on Next 16 rewrites `next-env.d.ts` and `tsconfig.json` (`jsx`, `.next/dev/types`). Don't commit those generated edits unless that's the point of the change.
+`next dev` on Next 16 rewrites `next-env.d.ts` and `tsconfig.json` (`jsx`, `.next/dev/types`) and generates a gitignored `AGENTS.md`. Don't commit those generated edits unless that's the point of the change; restore them with `git checkout -- next-env.d.ts tsconfig.json`.
+
+To reproduce CI exactly, run the steps in the digest-pinned image from `ci.yml` with `docker run --platform linux/amd64` on a copy of the repo. `neutral-naming.test.ts` calls `git ls-files`, so the copy needs a git index; a worktree's `.git` is only a pointer file, so run `git init && git add -A` inside the copy. Regenerate `package-lock.json` (hand edits are blocked by a hook) with `npm install --package-lock-only` in that same image, so the npm version matches.
 
 ## Engine architecture (`lib/ziwei/`)
 

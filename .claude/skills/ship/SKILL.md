@@ -40,6 +40,7 @@ Rules: `.claude/rules/workflow.md` (Verify, Scope, Worktrees, Git, Privacy). Run
      - the user's notes, if any
    - End the body with the PR attribution lines this session uses.
 7. **Watch CI** until the runs for the head commit complete. Report each job.
+   - First wait until `gh run list --repo thangnc/ziwei-doushu --commit <full sha>` lists a run; `gh pr checks --watch` exits early with "no checks reported" if it starts too soon.
    - There is one job, "Typecheck + chart regression" (Node 24 container). It must pass before merging.
    - On a failure, read the failed log (`gh run view <id> --repo thangnc/ziwei-doushu --log-failed`) and fix it in this worktree.
 8. **Stop and report.** Give the PR link and the CI result.
@@ -47,5 +48,6 @@ Rules: `.claude/rules/workflow.md` (Verify, Scope, Worktrees, Git, Privacy). Run
    - When they do: `gh pr merge <n> --repo thangnc/ziwei-doushu --merge --match-head-commit <full sha>`. Use a merge commit, never squash or rebase.
    - After the merge, and only when asked:
      - `ExitWorktree` with `action: remove`
+       - It warns that it will discard the merged commit because local `main` is behind. First run `git fetch origin main` and `git merge-base --is-ancestor <sha> origin/main`; if the commit is on `main` and `git status` is clean, pass `discard_changes: true`.
      - delete the remote branch
      - `git pull` in the main checkout

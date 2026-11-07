@@ -5,33 +5,22 @@
   "engines": {
     "node": "24.22.2"
   },
+  "packageManager": "npm@11.19.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "typecheck": "tsc --noEmit",
-    "test": "tsx scripts/regression/pan-integrity.test.ts && tsx scripts/regression/dst-cn.test.ts && tsx scripts/regression/clock-adjust.test.ts && tsx scripts/regression/sizhu-lichun-boundary.test.ts && tsx scripts/regression/hongluan-tianxi.test.ts && tsx scripts/regression/famous-hour-consistency.test.ts && tsx scripts/regression/iztro-time-index-boundary.test.ts && tsx scripts/regression/solar-date-exists.test.ts && tsx scripts/regression/gender-validation.test.ts && tsx scripts/regression/natal-dual-sihua-same-palace.test.ts && tsx scripts/regression/neutral-naming.test.ts && tsx scripts/regression/leap-policy-validation.test.ts && tsx scripts/regression/form-true-solar-day.test.ts && tsx scripts/regression/birthform-birthinfo-consistency.test.ts && tsx scripts/regression/heming-refresh.test.ts && tsx scripts/regression/heming-stream.test.ts && tsx scripts/regression/patterns-sihua-bonus.test.ts && tsx scripts/regression/engine-baseline.test.ts && tsx scripts/regression/patterns-baseline.test.ts && tsx scripts/regression/birthtime-baseline.test.ts && tsx scripts/regression/i18n-messages-parity.test.ts && tsx scripts/regression/i18n-locale-resolution.test.ts && tsx scripts/regression/leap-origin-month-thirtieth-day.test.ts && tsx scripts/regression/engine-import-boundary.test.ts"
-  },
-  "dependencies": {
-    "@vercel/analytics": "^2.0.1",
-    "@vercel/speed-insights": "^2.1.0",
-    "clsx": "^2.1.1",
-    "framer-motion": "^14.10.1",
-    "html2canvas": "^1.4.1",
-    "iztro": "^2.6.5",
-    "lunar-javascript": "^1.7.8",
-    "next": "^16.4.5",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "dev": "turbo run dev --",
+    "build": "turbo run build",
+    "start": "npm run start --workspace @ziwei/web",
+    "typecheck": "turbo run typecheck && tsc --noEmit",
+    "test": "turbo run test && tsx scripts/regression/neutral-naming.test.ts"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.5",
     "@types/node": "^22.20.5",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "postcss": "^8.5.32",
-    "tailwindcss": "^4.3.5",
     "tsx": "^4.19.0",
+    "turbo": "^2.11.10",
     "typescript": "^6.0.3"
   }
 }

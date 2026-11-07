@@ -72,6 +72,8 @@
 
 **4. 许可** —— [`DATASET-LICENSE`](./DATASET-LICENSE) 适用范围加上 v4.0；写明解读里引用的倪师原话不在数据授权范围内，与第五章倪师原话的 CC BY-NC-SA 4.0 一致。v3.0 样本数据集及其条款不变。
 
+> **2026-11-08 补充**：仓库改为 npm workspaces + Turborepo 的 monorepo 结构：排盘引擎从 `lib/ziwei/` 移到独立包 `packages/ziwei-engine/`（包名 `@ziwei/engine`，源码在 `src/`，回归测试与基线在 `test/`），Demo 界面（`app/`、`components/`、`lib/`）移到 `apps/web/`。`npm run dev`、`npm run build`、`npm run typecheck`、`npm test` 仍在仓库根目录运行；Next.js 开发与构建都用 Turbopack。只搬位置、不改代码：三份基线与 832 盘对照逐字节一致（#��。
+
 > **2026-11-07 补充**：仓库默认 README 改为英文版：原 `README.en.md` 现为 [`README.md`](./README.md)，中文版移到本文件 `README.zh-CN.md`。除语言切换链接外，两份正文都没有改动；英文版仍是简介，完整内容以中文版为准。
 
 > **2026-11-07 补充**：更正引擎能力表里「真太阳时校正」的描述——排盘表单（`lib/ziwei/share.ts`）一直只做经度时差校正（东八区，(经度 − 120°) × 4 分钟，即地方平太阳时），**没有加均时差**；此前写成「经度差 + 均时差」与实际不符。本次只更正文档，排盘结果不变；下文「真太阳时」在排盘表单语境下均指这一口径。另：界面开始增加越南语版本（默认越南语，可切回中文），排盘结果不受语言影响，详见 `lib/i18n/README.md`。
@@ -306,7 +308,7 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 
 ## 四、排盘引擎
 
-排盘内核全部在 `lib/ziwei/`。
+排盘内核全部在 `packages/ziwei-engine/src/`（workspace 包 `@ziwei/engine`，界面里写作 `@ziwei/engine/<模块>`）。
 
 ### 4.1 能做到什么（与常见排盘库的差异）
 
@@ -342,13 +344,13 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 | `yunxian-context.ts` | 运限上下文（含童限处理） |
 | `lunar-solar.ts` | 农历 / 公历互转与闰月边界 clamp |
 
-### 4.3 古籍原文（`lib/classics/`）
+### 4.3 古籍原文（`apps/web/lib/classics/`）
 
 - **骨髓赋**（`gusuifu.ts`）— 紫微斗数核心歌诀
 - **紫微斗数全集**（`quanji.ts`）— 清代古本
 - **紫微斗数全书**（`quanshu.ts`）— 陈希夷传本
 
-### 4.4 SEO 知识图谱（`lib/seo/`）
+### 4.4 SEO 知识图谱（`apps/web/lib/seo/`）
 
 14 主星 × 12 宫位的结构化知识数据，可用于内容生成或知识库构建。
 
@@ -368,15 +370,15 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 
 ## 六、界面是一份 Demo
 
-界面代码在 `app/` 与 `components/`。仓库里的界面是**一套最小可运行示例**，作用是把排盘引擎跑起来、把盘画出来，方便你在它基础上做自己的产品。**线上商业版的界面不在开源范围内**，两者差距很大：
+界面代码在 `apps/web/` 的 `app/` 与 `components/`。仓库里的界面是**一套最小可运行示例**，作用是把排盘引擎跑起来、把盘画出来，方便你在它基础上做自己的产品。**线上商业版的界面不在开源范围内**，两者差距很大：
 
 | 页面 / 组件 | 本仓库（Demo） | 线上商业版 |
 |------|------|------|
-| 排盘页 `app/chart/page.tsx` | 75 行 | 1227 行 |
+| 排盘页 `apps/web/app/chart/page.tsx` | 75 行 | 1227 行 |
 | 解读面板 `InsightPanel` | 467 行 | 5088 行 |
 | 命盘方格 `ChartBoard` | 285 行 | 1334 行 |
 | 宫位格 `PalaceCell` | 201 行 | 1192 行 |
-| 合盘页 `app/heming/page.tsx` | 368 行 | 1937 行 |
+| 合盘页 `apps/web/app/heming/page.tsx` | 368 行 | 1937 行 |
 
 **Demo 能跑通的**：出生信息表单、命盘方格与宫位详情、本命 / 大限 / 流年切换、古籍阅读器（全文搜索）、命理百科（14 主星 × 12 宫位）、亮暗主题、移动端适配。
 
@@ -388,10 +390,10 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 
 | | 内容 |
 |---|---|
-| ✅ **开源** | 排盘引擎（`lib/ziwei/`）、古籍公版原文（`lib/classics/`）、SEO 知识图谱（`lib/seo/`）、Demo 界面、51.8 万样本数据集、13 维解读数据集 v4.0 |
-| ❌ **不开源** | 断语库（`lib/ziwei/db-analysis.ts` 是占位，线上是上万行的 13 主题断语）、AI 解读 prompt、后端 API（`/api/interpret` 等）、用户系统（登录 / 会员 / 支付）、服务端安全（签名、防刷、水印）、部署配置 |
+| ✅ **开源** | 排盘引擎（`packages/ziwei-engine/`）、古籍公版原文（`apps/web/lib/classics/`）、SEO 知识图谱（`apps/web/lib/seo/`）、Demo 界面、51.8 万样本数据集、13 维解读数据集 v4.0 |
+| ❌ **不开源** | 断语库（`packages/ziwei-engine/src/db-analysis.ts` 是占位，线上是上万行的 13 主题断语）、AI 解读 prompt、后端 API（`/api/interpret` 等）、用户系统（登录 / 会员 / 支付）、服务端安全（签名、防刷、水印）、部署配置 |
 
-如果你需要 AI 解读能力，可以参考 `lib/ziwei/patterns.ts` 和 `heming-knowledge.ts` 里的知识库，结合任意 LLM 自行构建 prompt。
+如果你需要 AI 解读能力，可以参考 `packages/ziwei-engine/src/patterns.ts` 和 `heming-knowledge.ts` 里的知识库，结合任意 LLM 自行构建 prompt。
 
 ---
 
@@ -399,7 +401,7 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 
 这个仓库是**排盘引擎 + 数据集的开放快照**，不是一个全职维护的开源产品，说清楚免得大家猜：
 
-- **引擎同步**：随线上发版同步 `lib/ziwei/` 的引擎层并打 tag；断语库、AI 解读、商业站前端不在同步范围内。
+- **引擎同步**：随线上发版同步 `packages/ziwei-engine/` 的引擎层并打 tag；断语库、AI 解读、商业站前端不在同步范围内。
 - **Issue**：会看，但回复可能不及时；带复现步骤或具体盘例（年月日时 + 性别 + 哪一条不对）的问题优先处理。
 - **PR**：欢迎，尤其是回归测试、口径修正、文档。动到排盘口径的改动请附上依据（古籍原文或可核对的对照）。
 
@@ -411,7 +413,7 @@ npm test            # 排盘引擎回归（768 盘 × 紫微铁律、夏令时�
 
 | 内容 | 协议 | 简单说 |
 |------|------|--------|
-| **代码**（`lib/`、`app/`、`components/`） | [MIT License](./LICENSE) | 拿去随便用，保留 LICENSE 文件即可 |
+| **代码**（`packages/`、`apps/`、`scripts/`） | [MIT License](./LICENSE) | 拿去随便用，保留 LICENSE 文件即可 |
 | **数据**（Releases 中的 51.8 万样本数据集 v3.0、13 维解读数据集 v4.0） | [CC BY 4.0](./DATASET-LICENSE) · 要求 attribution | 商用也行，**注明数据来源即可** |
 | **古籍原文**（骨髓赋、紫微斗数全集 / 全书等） | Public Domain | 古书都是公有领域，不存在版权 |
 | **倪师原话**（[`docs/tianji-ziwei/`](./docs/tianji-ziwei/)） | [CC BY-NC-SA 4.0](./docs/tianji-ziwei/LICENSE.md) | 可以引用、转载，注明出处；**不许商用**，改编后用同样协议 |

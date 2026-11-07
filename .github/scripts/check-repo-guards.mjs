@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // Repository guards that CI runs before installing anything.
 //
-// 1. Every regression test is registered. There is no test framework: `npm test` runs only the
-//    files chained in package.json `scripts.test`, so a new scripts/regression/*.test.ts that
+// 1. Every regression test is registered. There is no test framework: each workspace's `npm test`
+//    runs only the files chained in its package.json `scripts.test` (packages/ziwei-engine/test,
+//    apps/web/test, and the repo-wide scripts/regression at the root), so a new *.test.ts that
 //    nobody appended there never runs and CI stays green. This fails on an unregistered file,
 //    a registered file that doesn't exist, a duplicate entry, or an entry in an unexpected form.
 // 2. One Node version everywhere. The baseline fixtures are only valid in the canonical runtime
-//    (scripts/regression/fixtures/README.md), so `.nvmrc`, package.json `engines.node` and the
+//    (packages/ziwei-engine/test/fixtures/README.md), so `.nvmrc`, package.json `engines.node` and the
 //    `node:<version>` tag of every workflow `container: image:` must name the same version.
 // 3. Knowledge-base format. Every docs/solutions/<category>/*.md follows the schema in
 //    docs/solutions/README.md: a known category directory, the required frontmatter keys with
@@ -22,40 +23,62 @@ const errors = [];
 const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
 
 // --- 1. Regression test registration ---------------------------------------------------------
+//
+// Monorepo layout (2026-11-08): each workspace chains its own tests in its package.json
+// `scripts.test`, with paths relative to the workspace; `turbo run test` runs them. The root
+// keeps only repo-wide tests and starts with `turbo run test`.
 
-const TEST_DIR = 'scripts/regression';
-const ENTRY = /^tsx (scripts\/regression\/[A-Za-z0-9._-]+\.test\.ts)$/;
+const SUITES = [
+  { pkgDir: 'packages/ziwei-engine', testDir: 'test', leading: [] },
+  { pkgDir: 'apps/web', testDir: 'test', leading: [] },
+  { pkgDir: '.', testDir: 'scripts/regression', leading: ['turbo run test'] },
+];
 
-const onDisk = readdirSync(TEST_DIR)
-  .filter((name) => name.endsWith('.test.ts'))
-  .map((name) => `${TEST_DIR}/${name}`)
-  .sort();
+let totalOnDisk = 0;
+let totalRegistered = 0;
+for (const { pkgDir, testDir, leading } of SUITES) {
+  const pkgFile = join(pkgDir, 'package.json');
+  const suitePkg = pkgDir === '.' ? pkg : JSON.parse(readFileSync(pkgFile, 'utf8'));
+  const escaped = testDir.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
+  const ENTRY = new RegExp(`^tsx (${escaped}/[A-Za-z0-9._-]+\\.test\\.ts)$`);
 
-const testScript = pkg.scripts?.test ?? '';
-const registered = [];
-for (const raw of testScript.split('&&')) {
-  const entry = raw.trim();
-  const match = ENTRY.exec(entry);
-  if (!match) {
-    errors.push(`package.json scripts.test has an entry in an unexpected form: "${entry}" (expected "tsx ${TEST_DIR}/<name>.test.ts")`);
-    continue;
+  const onDisk = readdirSync(join(pkgDir, testDir))
+    .filter((name) => name.endsWith('.test.ts'))
+    .map((name) => `${testDir}/${name}`)
+    .sort();
+
+  const entries = (suitePkg.scripts?.test ?? '').split('&&').map((e) => e.trim()).filter(Boolean);
+  leading.forEach((expected, i) => {
+    if (entries[i] !== expected) errors.push(`${pkgFile} scripts.test must start with "${expected}" (found "${entries[i] ?? ''}")`);
+  });
+
+  const registered = [];
+  for (const entry of entries.slice(leading.length)) {
+    const match = ENTRY.exec(entry);
+    if (!match) {
+      errors.push(`${pkgFile} scripts.test has an entry in an unexpected form: "${entry}" (expected "tsx ${testDir}/<name>.test.ts")`);
+      continue;
+    }
+    registered.push(match[1]);
   }
-  registered.push(match[1]);
-}
 
-const seen = new Set();
-for (const file of registered) {
-  if (seen.has(file)) errors.push(`${file} is registered more than once in package.json scripts.test`);
-  seen.add(file);
-  if (!onDisk.includes(file)) errors.push(`${file} is registered in package.json scripts.test but does not exist`);
-}
-for (const file of onDisk) {
-  if (!seen.has(file)) {
-    errors.push(`${file} is not registered: append " && tsx ${file}" to package.json scripts.test, or it never runs`);
+  const seen = new Set();
+  for (const file of registered) {
+    if (seen.has(file)) errors.push(`${file} is registered more than once in ${pkgFile} scripts.test`);
+    seen.add(file);
+    if (!onDisk.includes(file)) errors.push(`${file} is registered in ${pkgFile} scripts.test but does not exist`);
   }
-}
+  for (const file of onDisk) {
+    if (!seen.has(file)) {
+      errors.push(`${join(pkgDir, file)} is not registered: append " && tsx ${file}" to ${pkgFile} scripts.test, or it never runs`);
+    }
+  }
 
-console.log(`Regression tests: ${onDisk.length} on disk, ${registered.length} registered.`);
+  console.log(`Regression tests in ${join(pkgDir, testDir)}: ${onDisk.length} on disk, ${registered.length} registered.`);
+  totalOnDisk += onDisk.length;
+  totalRegistered += registered.length;
+}
+console.log(`Regression tests overall: ${totalOnDisk} on disk, ${totalRegistered} registered.`);
 
 // --- 2. Node version consistency -------------------------------------------------------------
 

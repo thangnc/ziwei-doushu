@@ -11,7 +11,7 @@ body:
     attributes:
       label: Area
       options:
-        - Chart engine (lib/ziwei)
+        - Chart engine (packages/ziwei-engine)
         - School options (亮度, 闰月, 晚子时, 四化 …)
         - Birth form / true solar time
         - Chart board / time navigation

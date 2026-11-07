@@ -18,8 +18,8 @@ Rules: `.claude/rules/workflow.md` (Verify, Scope, Worktrees, Git, Privacy). Run
    - Work out `<type>` and `<slug>` from the worktree name (`<type>-<slug>`), or ask the user.
 2. **Verify, and report the real output:**
    - `npm run typecheck` and `npm test`. All three baseline bodies must match. A body mismatch means stop and investigate; never regenerate fixtures.
-   - `npm run build` if anything under `app/`, `components/` or `next.config.*` changed. Afterwards `git status` must show no change to `next-env.d.ts` or `tsconfig.json`; if it does, CI's clean-tree step will fail too (see CLAUDE.md).
-   - If `lib/ziwei/` changed, run the `chart-diff-reviewer` agent and include what changed.
+   - `npm run build` if anything under `apps/web/` or the engine package changed. Afterwards `git status` must show no change to `apps/web/next-env.d.ts` or `apps/web/tsconfig.json`; if it does, CI's clean-tree step will fail too (see CLAUDE.md).
+   - If `packages/ziwei-engine/src/` changed, run the `chart-diff-reviewer` agent and include what changed.
    - For UI changes, say whether you looked at the page in a browser.
 3. **Review the diff.**
    - Look at `git status --short` and `git diff`.

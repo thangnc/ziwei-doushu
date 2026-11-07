@@ -1,0 +1,22 @@
+{
+  "name": "@ziwei/engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zi Wei Dou Shu (紫微斗数) charting engine. Source-only internal package: consumers import TypeScript from src/ and compile it themselves.",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx test/pan-integrity.test.ts && tsx test/dst-cn.test.ts && tsx test/clock-adjust.test.ts && tsx test/sizhu-lichun-boundary.test.ts && tsx test/hongluan-tianxi.test.ts && tsx test/famous-hour-consistency.test.ts && tsx test/iztro-time-index-boundary.test.ts && tsx test/solar-date-exists.test.ts && tsx test/gender-validation.test.ts && tsx test/natal-dual-sihua-same-palace.test.ts && tsx test/leap-policy-validation.test.ts && tsx test/form-true-solar-day.test.ts && tsx test/patterns-sihua-bonus.test.ts && tsx test/engine-baseline.test.ts && tsx test/patterns-baseline.test.ts && tsx test/birthtime-baseline.test.ts && tsx test/leap-origin-month-thirtieth-day.test.ts && tsx test/engine-import-boundary.test.ts"
+  },
+  "dependencies": {
+    "iztro": "^2.6.5",
+    "lunar-javascript": "^1.7.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "tsx": "^4.19.0",
+    "typescript": "^6.0.3"
+  }
+}

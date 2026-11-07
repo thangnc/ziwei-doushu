@@ -1,10 +1,9 @@
 {
+  // Repo-level tooling only (scripts/, the chart skill). Each workspace under apps/ and packages/
+  // has its own tsconfig.json and is type-checked by `turbo run typecheck`.
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["node"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -15,28 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./apps/web/*"]
     },
     "target": "ES2017"
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    ".claude/worktrees"
-  ]
+  "include": ["scripts/**/*.ts", ".claude/skills/**/*.ts"],
+  "exclude": ["node_modules", ".claude/worktrees"]
 }

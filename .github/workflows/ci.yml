@@ -19,9 +19,15 @@ permissions:
 # fixtures are generated in (Node 24.22.2 / npm 11.19.1, linux/amd64; ICU and tzdata are recorded
 # in the fixture metadata). Pinned by digest so a floating '24' can't drift to a new patch with
 # different ICU / tzdata. Versions and the procedure for changing them:
-# scripts/regression/fixtures/README.md. `.nvmrc` matches for local development, and the
+# packages/ziwei-engine/test/fixtures/README.md. `.nvmrc` matches for local development, and the
 # `guards` job fails if the two ever disagree.
 # Actions are pinned to commit SHAs; Dependabot (github-actions) proposes the bumps.
+#
+# The repo is an npm-workspaces monorepo (apps/web, packages/ziwei-engine) driven by Turborepo:
+# `npm run typecheck|test|build` run `turbo run <task>`. CI has no remote cache, so every task
+# executes; turbo only orders the tasks and splits the logs per workspace.
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
 
 jobs:
   guards:
@@ -49,6 +55,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      # turbo hashes task inputs with git; see the same step in the test job.
+      - name: Mark workspace as a git safe directory
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
       - name: Cache npm downloads
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

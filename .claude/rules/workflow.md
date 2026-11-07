@@ -36,7 +36,7 @@
   - computed `PATH=…` prefixes
   - long compound pipelines
 
-  Run binaries directly (`npm test`, `node_modules/.bin/tsc`) as separate commands. They use the shell's default Node; CI's pinned Node 24.22.2 container stays the reference for the baselines. For multi-step shell work (loops, docker runs), write a script in the scratchpad and run it with `sh <script>`.
+  Run binaries directly (`npm test`, `node_modules/.bin/tsc`, `node_modules/.bin/turbo`) as separate commands. They use the shell's default Node; CI's pinned Node 24.22.2 container stays the reference for the baselines. For multi-step shell work (loops, docker runs), write a script in the scratchpad and run it with `sh <script>`.
 - **Hooks resolve paths per checkout.** `$CLAUDE_PROJECT_DIR` stays at the main checkout inside a worktree session, so hooks use the edited file's git root or the session `cwd` (`.claude/hooks/lib.sh`). Keep it that way in new hooks.
 - **Escape hatch:** if the user explicitly wants an edit made in the main checkout, they create the gitignored marker `.claude/allow-main-edits` there and delete it afterwards. Never create it yourself.
 
@@ -45,7 +45,7 @@
 - **New technical writing is in English** by default: code comments, test header comments, docs, CI job and step names, commit messages, PR titles and descriptions, issue templates.
 - Chart terms that are engine identifiers stay in Chinese, e.g. 四化, 大限, 时辰, 命宫 and star names, because the code matches on them.
 - Existing Chinese comments and docs stay as they are. Translate them only when that is the task; don't mix translation into an unrelated change.
-- User-facing UI strings follow `lib/i18n/` (Vietnamese and Chinese; see `demo-ui.md`). Quoted classical and 倪师 text stays verbatim in Chinese (see `content-and-licensing.md`).
+- User-facing UI strings follow `apps/web/lib/i18n/` (Vietnamese and Chinese; see `demo-ui.md`). Quoted classical and 倪师 text stays verbatim in Chinese (see `content-and-licensing.md`).
 - `README.md` is English and `README.zh-CN.md` is Chinese; keep factual changes mirrored.
 
 ## Git
@@ -58,7 +58,7 @@
   - Add `(#issue)` when there is one.
 - Commits are SSH-signed (repo-local `commit.gpgsign`). The fork's `main` ruleset requires signed commits and a PR. Its status-check rule names no checks, so CI passing is enforced only by the `/ship` routine, not by GitHub. The check to require there is `CI result`, the job in `ci.yml` that sums up the others. Merge PRs with a merge commit, never squash or rebase.
 - Run `gh` with `--repo thangnc/ziwei-doushu`; otherwise it targets the upstream repo, because the fork has a parent.
-- `next dev` rewrites `next-env.d.ts` to its dev form. Don't stage that edit. The committed `next-env.d.ts` and `tsconfig.json` are the `next build` versions, and CI's "Working tree is clean after build" step fails if a build changes them.
+- `next dev` rewrites `apps/web/next-env.d.ts` to its dev form. Don't stage that edit. The committed `apps/web/next-env.d.ts` and `apps/web/tsconfig.json` are the `next build` versions, and CI's "Working tree is clean after build" step fails if a build changes them.
 - Commit, push or open a PR only when the user asks. Never commit `.env.local`, keys or real people's birth data.
 
 ## Privacy

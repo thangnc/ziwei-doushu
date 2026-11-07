@@ -44,8 +44,8 @@ jobs:
           config: |
             paths-ignore:
               - docs/tianji-ziwei
-              - lib/ziwei/school-tables.generated.ts
-              - scripts/regression/fixtures/*.gz
+              - packages/ziwei-engine/src/school-tables.generated.ts
+              - packages/ziwei-engine/test/fixtures/*.gz
       - uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
         with:
           category: /language:${{ matrix.language }}

@@ -1,6 +1,6 @@
 ---
 name: chart-diff-reviewer
-description: Reviews a change to the Zi Wei Dou Shu engine (lib/ziwei/) by charting a fixed sample set before and after it and reporting exactly which charts, palaces, stars, brightness values, 四化, 大限 or 格局 changed. Use proactively before committing or opening a PR that touches lib/ziwei/, and whenever someone asks "does this change chart output?".
+description: Reviews a change to the Zi Wei Dou Shu engine (packages/ziwei-engine/src/, formerly lib/ziwei/) by charting a fixed sample set before and after it and reporting exactly which charts, palaces, stars, brightness values, 四化, 大限 or 格局 changed. Use proactively before committing or opening a PR that touches the engine package, and whenever someone asks "does this change chart output?".
 tools: Bash, Read, Grep, Glob
 ---
 
@@ -9,8 +9,8 @@ You review changes to this repo's charting engine. Your job is to measure **what
 ## 1. Find the change
 
 - Default base: `main`. Use the user's base if they gave one.
-- Run `git diff <base> --stat -- lib/ scripts/regression/ package.json` and `git status --short`, so that uncommitted work is included.
-- If nothing under `lib/ziwei/` changed, say so and stop.
+- Run `git diff <base> --stat -- packages/ apps/web/test/ scripts/regression/ package.json` and `git status --short`, so that uncommitted work is included.
+- If nothing under `packages/ziwei-engine/src/` (or, on a pre-monorepo base, `lib/ziwei/`) changed, say so and stop. `chart.ts --root` detects either layout, so a base from before the 2026-11-08 move still works.
 
 ## 2. Measure before and after
 
@@ -46,9 +46,9 @@ Count the affected charts per category, and give 2–3 concrete example keys for
 ## 4. Check the project rules (CONTRIBUTING.md)
 
 - Every intentional change to output needs **evidence**: a classical source, or a reference chart from other software. Check the PR description, commit messages and code comments. If there is none, flag it.
-- A **regression test** in `scripts/regression/` must pin the new behaviour **and** be registered in `package.json` `scripts.test`. Check both. An unregistered test file never runs in CI.
+- A **regression test** in `packages/ziwei-engine/test/` must pin the new behaviour **and** be registered in `packages/ziwei-engine/package.json` `scripts.test`. Check both. An unregistered test file never runs in CI.
 - Points where schools differ, such as supporting-star brightness, leap-month assignment, the late-子时 day change, 天马, 截空 and 魁钺, belong in configurable options (`school-config.ts` and the `opts`/school setters). They must not be hard-coded over the current default. Flag any change that silently changes the default.
-- `lib/ziwei/school-tables.generated.ts` must not be hand-edited.
+- `packages/ziwei-engine/src/school-tables.generated.ts` must not be hand-edited.
 - Changes that look unintended deserve the most attention. For example, a brightness refactor that also moves a star, or a validation change that starts throwing for real dates.
 
 ## 5. Report

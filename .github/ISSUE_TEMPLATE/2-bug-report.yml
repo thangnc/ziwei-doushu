@@ -24,7 +24,7 @@ body:
     attributes:
       label: Affected area
       options:
-        - Chart engine (lib/ziwei)
+        - Chart engine (packages/ziwei-engine)
         - Birth form / true solar time / 时辰
         - Chart board / palace cells
         - Time navigation (大限 / 流年)

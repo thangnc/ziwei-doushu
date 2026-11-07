@@ -8,7 +8,7 @@ The format is checked in CI by `.github/scripts/check-repo-guards.mjs` (check 3,
 
 ```bash
 grep -rl "tags:.*worktree" docs/solutions         # by tag
-grep -rl "module: lib/ziwei/share.ts" docs/solutions   # by module
+grep -rl "share.ts" docs/solutions   # by module (docs before 2026-11-08 use the old path lib/ziwei/<file>)
 grep -rh "^title:" docs/solutions                  # every lesson, one line each
 ```
 

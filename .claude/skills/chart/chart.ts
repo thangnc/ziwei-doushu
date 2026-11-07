@@ -9,14 +9,16 @@
  *
  * Sweep (deterministic, one line per chart, for before/after diffs):
  *   npx tsx .claude/skills/chart/chart.ts --sweep [--root /path/to/other/checkout] > out.txt
- *   --root loads lib/ziwei from another checkout (e.g. a git worktree of the base branch).
+ *   --root loads the engine (packages/ziwei-engine/src, or lib/ziwei in pre-monorepo checkouts) from
+ *   another checkout (e.g. a git worktree of the base branch).
  */
 import path from 'node:path';
+import { existsSync } from 'node:fs';
 import * as nodeModule from 'node:module';
 import { pathToFileURL } from 'node:url';
 
 // patterns.ts / famous.ts import 'server-only', which isn't installed outside a Next build.
-// Stub it the same way scripts/regression/patterns-sihua-bonus.test.ts does (Node 22.15+).
+// Stub it the same way packages/ziwei-engine/test/patterns-sihua-bonus.test.ts does (Node 22.15+).
 type HookResult = { url?: string; format?: string; source?: string; shortCircuit?: boolean };
 const SERVER_ONLY_STUB = 'data:text/javascript,';
 (nodeModule as unknown as {
@@ -40,7 +42,12 @@ const BR = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉'
 const ST = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
 
 const root = path.resolve(opt('root') ?? process.cwd());
-const load = (rel: string) => import(pathToFileURL(path.join(root, rel)).href);
+// The engine lives in packages/ziwei-engine/src since the 2026-11-08 monorepo move, and in lib/ziwei
+// before it. Detect the layout per checkout so --root can still compare against an older base.
+const engineDir = existsSync(path.join(root, 'packages/ziwei-engine/src/algorithm.ts'))
+  ? 'packages/ziwei-engine/src'
+  : 'lib/ziwei';
+const load = (rel: string) => import(pathToFileURL(path.join(root, rel.replace(/^lib\/ziwei\//, `${engineDir}/`))).href);
 
 type Chart = any; // eslint-disable-line @typescript-eslint/no-explicit-any
 

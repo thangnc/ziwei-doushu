@@ -1,40 +1,41 @@
-# 参与贡献
+# Contributing
 
-欢迎提问题、提修复、提建议。先说清两件事，能省掉很多来回：
+Questions, fixes and suggestions are welcome. Two things up front will save a lot of back-and-forth:
 
-- 本仓库是 [ouranic.cn](https://ouranic.cn/?from=gh-contrib) 排盘引擎的**开源快照**，定期从线上同步（节奏见 README「维护节奏与贡献」）。
-- 开源版**不含**断语库、AI 解读提示词和任何 `/api/*` 后端接口（见 README「开源边界」）。AI 解读、合盘分析在开源版里返回 404 是预期行为，需要你自己实现。
+- This repo is an **open snapshot** of the charting engine behind [ouranic.cn](https://ouranic.cn/?from=gh-contrib), synced from production periodically. The release cadence is in [`README.zh-CN.md`](./README.zh-CN.md) §八「维护节奏与贡献」.
+- The open-source version **does not include** the interpretation database, the AI prompts or any `/api/*` backend route; see "What is not included" in the [README](./README.md). AI interpretation and compatibility (合盘) analysis return 404 here by design; you'd need to implement them yourself.
 
-## 提问题
+## Asking questions
 
-- **怎么用、想交流**：去 [讨论区](https://github.com/Renhuai123/ziwei-doushu/discussions)。
-- **觉得盘排得不对**：用「排盘结果疑问」模板，附上公历出生日期、几点几分、出生地或经度、性别、本项目的结果，以及你拿来对照的结果。只写「不准」我们没法查。
-  - 辅星亮度、闰月归属、晚子时是否换日，各流派本来就不同，引擎里做成了可切换的口径；这类差异不算 bug，但欢迎指出。
-- **程序报错、页面异常**：用「程序问题」模板，写清复现步骤和报错。
-- **正式站（ouranic.cn）的问题**：用「正式站问题」模板。
+- **How to use it, or general discussion**: use [Discussions](https://github.com/Renhuai123/ziwei-doushu/discussions).
+- **You think a chart is wrong**: use the "Chart result question" form. Include the Gregorian birth date, the time to the minute, the birthplace or longitude, the gender, this project's result and the result you compared it with. A bare "it's inaccurate" can't be investigated.
+  - Supporting-star brightness, leap-month assignment and whether the late 子时 changes the day differ between schools by design, and the engine makes them switchable options. Such differences aren't bugs, but pointing them out is still welcome.
+- **Errors or broken pages**: use the "Bug report" form, with steps to reproduce and the error message.
+- **Problems with the live site (ouranic.cn)**: use the "ouranic.cn issue" form.
 
-请不要在 issue 里贴手机号、验证码，或未经本人同意的他人生辰信息。
+Please don't post phone numbers, verification codes, or anyone else's birth data without their consent.
 
-## 提交代码
+## Submitting code
 
 ```bash
-npm ci               # 按 package-lock.json 安装
-npm run typecheck    # 类型检查
-npm test             # 排盘回归
+npm ci               # install from package-lock.json
+npm run typecheck    # type check
+npm test             # chart regression tests
 ```
 
-- 一个 PR 只做一件事，说明里写清改了什么、为什么。
-- **改排盘结果的**：附上对照证据（出处，或其他排盘软件的截图），并在 `scripts/regression/` 加回归测试、登记到 `package.json` 的 `test` 脚本。没有出处的口径改动一般不收。
-- CI 会在每次 push 和 PR 上跑同一套检查。
+- One change per PR. Say what changed and why in the description.
+- **If it changes chart results**: attach evidence (a cited source, or a screenshot from other charting software), and add a regression test under `scripts/regression/`, registered in the `test` script in `package.json`. Changes to a convention without a source are generally not accepted.
+- CI runs the same checks on every push and PR, on Node 24 (see `.nvmrc`).
+- New comments, docs and commit messages are written in English. Chart terms that are engine identifiers (四化, 大限, 时辰, star and palace names) stay in Chinese. Don't translate existing Chinese comments as part of an unrelated change.
 
-## 许可
+## License
 
-提交即表示你同意贡献内容按对应协议发布：
+By contributing, you agree that your contribution is released under the matching license:
 
-- 代码：[MIT](./LICENSE)
-- 样本数据集：[CC BY 4.0](./DATASET-LICENSE)
-- 倪师原话目录 `docs/tianji-ziwei/`：[CC BY-NC-SA 4.0](./docs/tianji-ziwei/LICENSE.md)，不许商用
+- Code: [MIT](./LICENSE)
+- Sample dataset: [CC BY 4.0](./DATASET-LICENSE)
+- Ni Haixia quotations in `docs/tianji-ziwei/`: [CC BY-NC-SA 4.0](./docs/tianji-ziwei/LICENSE.md), non-commercial only
 
 ---
 
-**English.** Issues and PRs are welcome. This repo is an open snapshot of the charting engine behind ouranic.cn; the interpretation database, AI prompts and all `/api/*` backend routes are not included, so AI features return 404 by design. For a chart you believe is wrong, please use the "Chart result question" form with full birth data and a reference result. Before opening a PR, run `npm ci`, `npm run typecheck` and `npm test`; changes to chart results need evidence and a regression test.
+**中文.** 欢迎提问题、提修复、提建议。本仓库是 ouranic.cn 排盘引擎的开源快照，不含断语库、AI 解读提示词和任何 `/api/*` 后端接口，AI 功能返回 404 属预期。觉得盘排得不对，请用「Chart result question」模板，附完整出生信息和对照结果。提 PR 前请跑 `npm ci`、`npm run typecheck` 和 `npm test`；改排盘结果的需要附出处并加回归测试。详细中文说明见 [README.zh-CN.md](./README.zh-CN.md)。

@@ -9,7 +9,7 @@
 ## Scope
 
 - One change per task and per PR, as CONTRIBUTING.md asks. Don't bundle refactors, reformatting or "while I'm here" fixes into a bug fix; mention them instead.
-- There is no linter or formatter. Match the surrounding style by hand: 2-space indent, single quotes, semicolons, and the existing Chinese comment style. Don't reformat lines you didn't change.
+- There is no linter or formatter. Match the surrounding style by hand: 2-space indent, single quotes, semicolons. Write new comments in English (see Language below). Don't reformat lines you didn't change.
 - Don't add dependencies without asking. The project deliberately cut its dependencies from 483 to 185. Prefer the Node standard library and the existing packages (iztro, lunar-javascript).
 
 ## Worktrees
@@ -34,6 +34,14 @@
   Run binaries directly (`npm test`, `node_modules/.bin/tsc`) as separate commands. They use the shell's default Node; CI's pinned Node 24.22.2 container stays the reference for the baselines.
 - **Hooks resolve paths per checkout.** `$CLAUDE_PROJECT_DIR` stays at the main checkout inside a worktree session, so hooks use the edited file's git root or the session `cwd` (`.claude/hooks/lib.sh`). Keep it that way in new hooks.
 - **Escape hatch:** if the user explicitly wants an edit made in the main checkout, they create the gitignored marker `.claude/allow-main-edits` there and delete it afterwards. Never create it yourself.
+
+## Language
+
+- **New technical writing is in English** by default: code comments, test header comments, docs, CI job and step names, commit messages, PR titles and descriptions, issue templates.
+- Chart terms that are engine identifiers stay in Chinese, e.g. 四化, 大限, 时辰, 命宫 and star names, because the code matches on them.
+- Existing Chinese comments and docs stay as they are. Translate them only when that is the task; don't mix translation into an unrelated change.
+- User-facing UI strings follow `lib/i18n/` (Vietnamese and Chinese; see `demo-ui.md`). Quoted classical and 倪师 text stays verbatim in Chinese (see `content-and-licensing.md`).
+- `README.md` is English and `README.zh-CN.md` is Chinese; keep factual changes mirrored.
 
 ## Git
 

@@ -18,7 +18,7 @@ Add one regression test for: **$ARGUMENTS**
    Assert only values that have a source, such as a classical text, a reference chart from other software, or the bug report. Cite that source in the header comment.
 
 3. **Write the test in the house style.** Follow the existing tests, e.g. `gender-validation.test.ts` and `hongluan-tianxi.test.ts`:
-   - Start with a header doc comment, in Chinese like the other tests, that says why this test exists and what the source is.
+   - Start with a header doc comment, in English, that says why this test exists and what the source is. Older tests have Chinese headers; leave those as they are.
    - Use relative imports such as `../../lib/ziwei/algorithm`, not `@/`.
    - Use `import assert from 'node:assert/strict'`. Each assertion message should state the expected rule.
    - No test framework. End with a `console.log('<name> regression passed')`. Any thrown assertion exits non-zero.

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 An open-source snapshot of the Zi Wei Dou Shu (紫微斗数) charting engine behind ouranic.cn, based on 倪海厦《天纪》. It's a Next.js 16 / React 19 / Tailwind app, but the real product is the engine in `lib/ziwei/`. The UI under `app/` and `components/` is only a small demo.
 
-Open-source boundary (from `README.zh-CN.md` §七; "What is not included" in the English `README.md`): the interpretation database (`lib/ziwei/db-analysis.ts` is a placeholder with an empty `STAR_DB`), the AI prompts and every `/api/*` route are **not** included. `fetch('/api/interpret')` and `fetch('/api/heming')` return 404 by design, and the UI shows a "开源版不含该接口" message. Don't treat that as a bug, and don't add API routes unless asked. Comments, docs, issues and commit messages are mostly in Chinese; match that style.
+Open-source boundary (from `README.zh-CN.md` §七; "What is not included" in the English `README.md`): the interpretation database (`lib/ziwei/db-analysis.ts` is a placeholder with an empty `STAR_DB`), the AI prompts and every `/api/*` route are **not** included. `fetch('/api/interpret')` and `fetch('/api/heming')` return 404 by design, and the UI shows a "开源版不含该接口" message. Don't treat that as a bug, and don't add API routes unless asked. Existing comments and docs are mostly in Chinese, but on this fork **new technical writing is in English**: comments, docs, commit messages, PRs and CI names. Chart terms that are engine identifiers (四化, 大限, 时辰, star and palace names) stay in Chinese. Don't translate existing Chinese comments as part of unrelated work. See `.claude/rules/workflow.md` → Language.
 
 ## Commands
 
@@ -59,7 +59,7 @@ Remotes: `origin` is the fork `thangnc/ziwei-doushu`, where PRs go; `upstream` i
 ## Rules
 
 Detailed rules are in `.claude/rules/`. Most load only when Claude works on matching files.
-- `workflow.md` (always loaded): verifying before claiming done, one change per PR, working in worktrees, commit and PR style, privacy of birth data.
+- `workflow.md` (always loaded): verifying before claiming done, one change per PR, working in worktrees, language (English for new technical writing), commit and PR style, privacy of birth data.
 - `engine.md` (`lib/ziwei/**`): evidence required for any change to chart output, school options instead of hard-coded fixes, engine invariants.
 - `regression-tests.md` (`scripts/regression/**`, `package.json`): test house style and registration.
 - `demo-ui.md` (`app/**`, `components/**`): no backend, no `server-only` modules in client components.

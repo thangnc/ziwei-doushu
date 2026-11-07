@@ -1,35 +1,35 @@
-name: 程序问题 / Bug report
-description: 代码跑不起来、报错、页面显示异常
+name: Bug report / 程序问题
+description: The code won't run, throws an error, or a page displays incorrectly
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        先确认：开源版**不含**任何 `/api/*` 后端接口（AI 解读、合盘分析），这些功能出现 404 是预期行为，需要你自己实现，见 README「快速开始」。排盘本身不需要 API Key。
+        First check: the open-source version **does not include** any `/api/*` backend route (AI interpretation, compatibility analysis). A 404 from those features is expected; you'd need to implement them yourself (see "Quick start" in the README). Charting itself needs no API key.
   - type: textarea
     id: steps
     attributes:
-      label: 复现步骤
+      label: Steps to reproduce
       placeholder: |
         1. npm ci
         2. npm run dev
-        3. 打开 /chart，选 …… 点 ……
+        3. Open /chart, choose … and click …
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: 期望结果
+      label: Expected result
     validations:
       required: true
   - type: textarea
     id: actual
     attributes:
-      label: 实际结果（报错信息、截图）
+      label: Actual result (error message, screenshot)
     validations:
       required: true
   - type: input
     id: env
     attributes:
-      label: 运行环境
-      placeholder: 例：macOS 15 / Node 22 / Chrome 140
+      label: Environment
+      placeholder: "e.g. macOS 15 / Node 24 / Chrome 140"

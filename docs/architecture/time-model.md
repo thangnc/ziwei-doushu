@@ -82,7 +82,7 @@ The mismatches:
 1. **均时差 (equation of time).** `README.md:311` presents "经度时差 + 均时差" as what the product does. The path users actually reach (`share.ts:8`, `:30`) applies **only** the longitude term, against a fixed 120° meridian. The module described at `README.md:335` does include EoT (`true-solar-time.ts:109-111`), but no route calls it (§1.2).
 2. **夏令时 (DST).** `README.md:312` says "1986–1991", but `dst-cn.ts:33-43` covers 1935–1991. The README also implies a user-confirmation flow ("由用户确认后用 clock-adjust.ts"), which this repo does not wire into any UI (§1.3).
 
-Per the plan these are recorded, not fixed (see §6, decision D-2).
+Per the plan these are recorded, not fixed (see §6, decision Q-2).
 
 ### 1.5 What is persisted today
 
@@ -136,7 +136,7 @@ Urumqi 87.6E 1990-11-03: 192 of 1440 clock minutes differ (13.3%): 00:54-01:09, 
 Reading the results:
 - On dates where |EoT| is near its annual extremes (about −14 min in mid-February, +16 min in early November), roughly **12–13 % of all clock minutes** change 时辰 between the two paths.
 - Where the boundary is the 子 boundary, the **chart date** changes as well (Urumqi 1990-11-03 00:55: 1990-11-02 亥 vs 1990-11-03 子).
-- The differences come only from EoT, since both paths use the same 120° meridian here. This is the size of the effect behind decision D-1 (§6).
+- The differences come only from EoT, since both paths use the same 120° meridian here. This is the size of the effect behind decision Q-1 (§6).
 
 ---
 
@@ -194,7 +194,7 @@ China's current behaviour is the special case `civil = standard = 480`, `solarMo
      clock 01:15 lng 116.2499999: share raw=59.999999600000024 -> 子 ; rounded-to-second=60 -> 丑
      clock 01:15 lng 116.24999:   share raw=59.99995999999999  -> 子 ; rounded-to-second=60 -> 丑
      ```
-   - `legacy-v0` (§4.4) must therefore **not** round. The new calcVersion needs an explicit rounding rule (decision D-6).
+   - `legacy-v0` (§4.4) must therefore **not** round. The new calcVersion needs an explicit rounding rule (decision Q-6).
 2. **Computing through `Date`/milliseconds.** For example `Date.UTC(...) − civil·60000 + 4λ·60000` rounds to whole milliseconds and changes the order of operations, so the guarantee above no longer applies. The legacy path must keep the minute-domain expression exactly, or be the frozen `share.ts` code itself.
 
 Display: `BirthForm.tsx:83` rounds the correction to whole minutes for display only. It must stay display-only.
@@ -261,7 +261,7 @@ Asia/Shanghai 1986-09-14T01:00  AMBIGUOUS (fold)  1986-09-13T16:00:00.000Z (+540
 
 - **China:** current behaviour is kept. The China form uses fixed +480 and the date-only `dst-cn.ts` table, which deliberately differs from tzdata (`dst-cn.ts:15-21`). Fold and gap results for `Asia/Shanghai` are informational and never change a China chart automatically.
 
-### 2.7 Vietnam default solar mode — DECISION for the user (D-1)
+### 2.7 Vietnam default solar mode — DECISION for the user (Q-1)
 
 - **Recommendation: `'mean'`**, the same mode as the current China form. One pipeline then treats both countries alike: LMT from the actual civil offset and the birthplace longitude, with no EoT.
 - Under `'mean'`, Vietnam's correction for a present-day birth is `4·(λ − 105)`. For Hà Nội (λ ≈ 105.85, derived from the backzone LMT `7:03:24` = 423.4 min / 4) that is about +3.4 min. For TP HCM (λ = 106°40′ = 106.667, `zone.tab` `+1045+10640`) it is about +6.7 min.
@@ -541,7 +541,7 @@ Confidence levels:
 | 33 | Cà Mau | Bạc Liêu + Cà Mau | South | vn-south | idem |
 | 34 | An Giang | Kiên Giang + An Giang | South | vn-south | idem |
 
-Counts: North 18, South 15, split 1 (= 34). The north/south assignment per pre-2025 province rests on general knowledge of the 1954 partition along the Bến Hải line [H5]. **No per-province historical-time source was found.** The assignment is a proposal for the user to approve (decision D-3).
+Counts: North 18, South 15, split 1 (= 34). The north/south assignment per pre-2025 province rests on general knowledge of the 1954 partition along the Bến Hải line [H5]. **No per-province historical-time source was found.** The assignment is a proposal for the user to approve (decision Q-3).
 
 ### 3.7 Known limitations (explicit)
 
@@ -632,19 +632,31 @@ See §1.5:
 
 ## 6. Open questions / decisions for the user
 
+> **Relabelled 2026-11-07:** these open questions were originally numbered D-1 to D-11. That clashed with the decision log `docs/decisions/localization.md`, whose D-1 to D-8 are the decisions taken afterwards (for example, log D-7 is "Node 26" and log D-8 is the leap-month bug). They are now Q-1 to Q-11, here and in the references in §1.4, §1.6, §2.4, §2.7 and §3.6. Nothing else in this document changed. How each question was answered:
+>
+> | Question | Answered by (decision log) |
+> |---|---|
+> | Q-1 Vietnam solar mode | **D-2**: mean solar time, no equation of time |
+> | Q-2 README mismatch | **D-2**, third bullet: README corrected to describe the form path (option a), done in Phase 1 |
+> | Q-3 province mapping, Q-4 northern gaps, Q-5 southern contested areas | **D-3**, in principle: evidence-backed mappings only, unresolved periods stay unresolved, no proxy zone. The specific proposals here aren't individually approved. |
+> | Q-6 rounding rule | **D-6**: round once, deterministic nearest-minute half-up. That is neither option (a) nor (b) above. |
+> | Q-7 EoT time base | Open; moot while the default is mean solar time (D-2) |
+> | Q-8 China DST wiring | **D-6**, third bullet: no China DST control in the UI yet |
+> | Q-9 history de-duplication, Q-10 34-unit source, Q-11 pre-1906 births | Open |
+
 | ID | Decision | Recommendation / options |
 |---|---|---|
-| **D-1** | **Vietnam default solar mode** | Recommend `'mean'`, the same as the China form. Switching **either** country to `'true'` changes results (about 12–13 % of clock minutes on high-EoT dates, §1.6) and needs its own evidence, decision and PR. |
-| **D-2** | **README mismatch** (`README.md:311`, `:335`/`:100` "均时差"; `:312` "1986–1991" and implied clock-adjust UI) | Options: (a) correct the README to describe the form path (LMT, fixed +480, no EoT) and the dormant status of `dst-cn`/`clock-adjust`; (b) change the product to match the README, which is decision D-1 for China; (c) leave as is. Recorded as a finding; not changed in Phase 0. |
-| **D-3** | **Province → zone/rule mapping** (§3.6) | Approve the 18 North / 15 South / 1 split (Quảng Trị) assignment and the `vn-north`/`vn-south` rule sets. Post-1975 everything maps to `Asia/Ho_Chi_Minh`. |
-| **D-4** | **Northern history gaps** (1947–Oct 1954 / May 1955; Hải Phòng day; pre-1911) | Proposed: return `unresolved` and ask the user for the clock offset, rather than adopting backzone `Asia/Hanoi`'s +08 for all of the north. Alternatives: use backzone Hanoi values for Hà Nội city only, labelled low confidence. |
-| **D-5** | **Southern contested areas 1960–1975 and the 1975-06-13 hour** | Proposed: use `Asia/Ho_Chi_Minh` as tzdata does and label it "theo IANA tzdata". Show both fold candidates for 1975-06-12 23:00–23:59. |
-| **D-6** | **Rounding rule for `v1`** | `legacy-v0` must not round (§2.4). For `v1`: (a) no rounding, like `share.ts`; or (b) nearest second, like `true-solar-time.ts:116`. They are identical for catalogue longitudes and differ for exact coordinates within 0.5 s of a boundary. |
-| **D-7** | **EoT time base** (only if `'true'` is ever enabled) | Evaluate at the UTC instant, or keep the local clock as at `true-solar-time.ts:86-88`. |
-| **D-8** | **China DST wiring** | `dst-cn.ts`/`clock-adjust.ts` are not wired into any UI in this repo (§1.3). Decide whether Phase 3 adds the user-confirmed button or keeps today's state. The model never applies DST automatically for China in any case. |
-| **D-9** | **History de-duplication ignores place** (`history.ts:41-48`) | Once place affects results through offsets, two births at the same time in different places overwrite each other. Decide whether to add `locationId`/`lat`/`lon` to the key. |
-| **D-10** | **Source for the 34-unit list** | Accept the LuatVietnam English transcription of Resolution 202/2025/QH15, or require the Công báo original before Phase 3. |
-| **D-11** | **Pre-1906 / LMT-era births** (the form allows 1900+) | Proposed: allow them, mark `standardOffsetMinutes = null`, and show a "giờ địa phương trước 1906" warning. |
+| **Q-1** | **Vietnam default solar mode** | Recommend `'mean'`, the same as the China form. Switching **either** country to `'true'` changes results (about 12–13 % of clock minutes on high-EoT dates, §1.6) and needs its own evidence, decision and PR. |
+| **Q-2** | **README mismatch** (`README.md:311`, `:335`/`:100` "均时差"; `:312` "1986–1991" and implied clock-adjust UI) | Options: (a) correct the README to describe the form path (LMT, fixed +480, no EoT) and the dormant status of `dst-cn`/`clock-adjust`; (b) change the product to match the README, which is decision Q-1 for China; (c) leave as is. Recorded as a finding; not changed in Phase 0. |
+| **Q-3** | **Province → zone/rule mapping** (§3.6) | Approve the 18 North / 15 South / 1 split (Quảng Trị) assignment and the `vn-north`/`vn-south` rule sets. Post-1975 everything maps to `Asia/Ho_Chi_Minh`. |
+| **Q-4** | **Northern history gaps** (1947–Oct 1954 / May 1955; Hải Phòng day; pre-1911) | Proposed: return `unresolved` and ask the user for the clock offset, rather than adopting backzone `Asia/Hanoi`'s +08 for all of the north. Alternatives: use backzone Hanoi values for Hà Nội city only, labelled low confidence. |
+| **Q-5** | **Southern contested areas 1960–1975 and the 1975-06-13 hour** | Proposed: use `Asia/Ho_Chi_Minh` as tzdata does and label it "theo IANA tzdata". Show both fold candidates for 1975-06-12 23:00–23:59. |
+| **Q-6** | **Rounding rule for `v1`** | `legacy-v0` must not round (§2.4). For `v1`: (a) no rounding, like `share.ts`; or (b) nearest second, like `true-solar-time.ts:116`. They are identical for catalogue longitudes and differ for exact coordinates within 0.5 s of a boundary. |
+| **Q-7** | **EoT time base** (only if `'true'` is ever enabled) | Evaluate at the UTC instant, or keep the local clock as at `true-solar-time.ts:86-88`. |
+| **Q-8** | **China DST wiring** | `dst-cn.ts`/`clock-adjust.ts` are not wired into any UI in this repo (§1.3). Decide whether Phase 3 adds the user-confirmed button or keeps today's state. The model never applies DST automatically for China in any case. |
+| **Q-9** | **History de-duplication ignores place** (`history.ts:41-48`) | Once place affects results through offsets, two births at the same time in different places overwrite each other. Decide whether to add `locationId`/`lat`/`lon` to the key. |
+| **Q-10** | **Source for the 34-unit list** | Accept the LuatVietnam English transcription of Resolution 202/2025/QH15, or require the Công báo original before Phase 3. |
+| **Q-11** | **Pre-1906 / LMT-era births** (the form allows 1900+) | Proposed: allow them, mark `standardOffsetMinutes = null`, and show a "giờ địa phương trước 1906" warning. |
 
 ### Not verified (explicit)
 - The [H3] gazette scans (cited only through tzdata).

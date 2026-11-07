@@ -463,7 +463,9 @@ export default function HomePage() {
   }, [c.bgBase]);
 
   return (
-    <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-hidden">
+    <div style={{ background: c.bgBase, transition: 'background 0.35s ease' }} className="overflow-x-clip">
+      {/* overflow-x-clip（不是 hidden）：hidden 会让这个 div 成为滚动容器，framer-motion ≥13.5 的 useScroll
+          改用原生 ViewTimeline 后会绑到这个不滚动的容器上，首屏淡出失效；clip 同样裁掉横向溢出但不产生滚动容器。 */}
       {/* 致用户公告——首次访问全屏覆盖，关闭后才进入首页 */}
       <AnnouncementModal />
 

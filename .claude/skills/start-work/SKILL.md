@@ -30,7 +30,7 @@ Rules: `.claude/rules/workflow.md` → Worktrees. In a worktree session, run eac
    - Confirm that `git log --oneline -1` matches `git log --oneline -1 origin/main`.
 4. **Install:** `npm ci --no-audit --no-fund`.
    - Each worktree has its own `node_modules`; never symlink one from the main checkout.
-   - An `EBADENGINE` warning when the shell's Node isn't 22.22.3 is expected.
+   - An `EBADENGINE` warning when the shell's Node isn't 24.22.2 is expected.
 5. **Baseline check:** `npm run typecheck`. Report a failure at this point as pre-existing, not as caused by the task.
 6. **Report to the user, briefly:**
    - the worktree path

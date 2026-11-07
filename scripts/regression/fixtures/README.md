@@ -42,27 +42,29 @@ They exist so that later localization and refactoring can show that this output 
 
 | Item | Value |
 |---|---|
-| Image | `node:22.22.3-bookworm@sha256:46e94f8cf91baab69a2deb3153e74eeffd73c20c7cc1d8432f5b96469eaa0322`: the **linux/amd64** manifest of the multi-arch index `sha256:2d178f2785b96dfbf62a416ca2e40f50e30150b4ff3320d706f0d96e90600eb3`, created 2026-06-11 |
-| OS / arch | Debian 12.14 (bookworm), linux x64 |
-| Node / npm | v22.22.3 / 10.9.8 |
-| ICU / tzdata / Unicode | 78.2 / 2026a / 17.0 |
-| iztro / lunar-javascript | 2.6.1 / 1.7.7 at generation (from `package-lock.json` via `npm ci`) |
+| Image | `node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0`: the **linux/amd64** manifest of the multi-arch index `sha256:8fa96264f302f58bbb13aa7339c541547b56975766ce956c875da149452a3e40`, created 2026-11-05 |
+| OS / arch | Debian 12 (bookworm), linux x64 |
+| Node / npm | v24.22.2 / 11.19.1 |
+| ICU / tzdata / Unicode | 78.3 / 2026e / 17.0 |
+| iztro / lunar-javascript | 2.6.5 / 1.7.8 (from `package-lock.json` via `npm ci`) |
 
-**Dependency update, 2026-11-07:** iztro was updated to **2.6.5** and lunar-javascript to **1.7.8**.
-- All three fixture bodies stayed **byte-identical** under the new versions: same SHA-256, verified locally and in the canonical container. So the fixtures weren't regenerated.
-- The verifier now prints an informational `ENVIRONMENT MISMATCH` for the `iztro` / `lunarJavascript` metadata. That's expected, and per the rules it never fails a test or triggers a regeneration.
-- The next intentional, reviewed regeneration will refresh the metadata.
+**Switch to Node 24, 2026-11-07.** The canonical runtime moved from `node:22.22.3-bookworm@sha256:46e94f8c…` (Node 22.22.3, npm 10.9.8, ICU 78.2, tzdata 2026a) to the image above, and CI now runs only on it.
+- The fixtures were regenerated with `--write` in the new container. All three bodies came out **byte-identical** (same SHA-256 as before, and the `.jsonl.gz` files are byte-for-byte unchanged), so no chart output changed and no `chart-diff-reviewer` report applies.
+- Only the `.meta.json` files changed: Node, npm, ICU, tzdata, image, git commit, timestamp, and the iztro / lunar-javascript versions from the 2026-11-07 dependency update.
+- `.nvmrc` and `package.json` `engines` are now `24.22.2`.
 
-**CI uses the same image.** `.github/workflows/ci.yml` runs the `check` job in `container:` with this digest, instead of `setup-node` with `node-version: '22'`, which would float to the newest 22.x and its ICU/tzdata. So the generation and verification environments are identical.
+**Earlier dependency update, 2026-11-07:** iztro 2.6.1 → 2.6.5 and lunar-javascript 1.7.7 → 1.7.8 left all three bodies byte-identical; the Node 24 regeneration above refreshed that metadata.
 
-**Local development** uses `.nvmrc` (`22.22.3`) and `package.json` `engines`. Local runs are **Node-runtime-compatible, not environment-identical**: macOS on arm64 is a different OS and architecture. They are for development only; **fixtures are never generated locally.**
+**CI uses the same image.** `.github/workflows/ci.yml` runs its single `check` job in `container:` with this digest, instead of `setup-node` with `node-version: '24'`, which would float to the newest 24.x and its ICU/tzdata. So the generation and verification environments are identical.
+
+**Local development** uses `.nvmrc` (`24.22.2`) and `package.json` `engines`. Local runs are **Node-runtime-compatible, not environment-identical**: macOS on arm64 is a different OS and architecture. They are for development only; **fixtures are never generated locally.**
 
 ## Regenerating (deliberate, reviewed only)
 
 Tests are read-only; they never write, regenerate or overwrite fixtures. The generator refuses to run without `--write`.
 
 ```bash
-IMG=node:22.22.3-bookworm@sha256:46e94f8cf91baab69a2deb3153e74eeffd73c20c7cc1d8432f5b96469eaa0322
+IMG=node:24.22.2-bookworm@sha256:6b9d4ea31e614e29f364bf75758458731eb1e105b80c99667438dd6b3fe262e0
 # copy the repo, minus node_modules and .next, to SRC; then:
 docker run --rm --platform linux/amd64 -v "$SRC":/src:ro -v "$OUT":/out \
   -e BASELINE_IMAGE="$IMG" -e BASELINE_RUNTIME=container -e BASELINE_GIT_COMMIT="$(git rev-parse HEAD)" "$IMG" \
@@ -96,4 +98,4 @@ The bodies were generated twice in the canonical container with `--check-determi
 - Once server-side timezone resolution is added (Phase 3), ICU/tzdata **will** affect results. That's why the canonical image is pinned now.
 - The first container attempt failed in the existing `neutral-naming.test.ts`, because it calls `git ls-files` and my copy of the repo left out `.git`. Rerun with `.git` included, as `actions/checkout` provides, it passed. This was a problem with my copy, not with CI.
 - **Node 26 compatibility** is a separate check from baseline verification, as decided.
-- **Node 24 compatibility job (added 2026-11-07):** `.github/workflows/ci.yml` job `node24` runs `typecheck`, `test` and `build` on the latest Node 24 (`setup-node`, floating 24.x) with `continue-on-error: true`, so it never blocks. Its `ENVIRONMENT MISMATCH` reports are informational. A body mismatch there is opened as an issue for investigation and **never** leads to a fixture update. Local check on Node 24.22.2 (npm 11.19.1, ICU 78.3, tzdata 2026e): all tests and the build passed, and all 3 bodies matched.
+- **Node 24 compatibility job (added 2026-11-07, removed the same day when Node 24 became the canonical runtime; see above):** `.github/workflows/ci.yml` job `node24` ran `typecheck`, `test` and `build` on the latest Node 24 (`setup-node`, floating 24.x) with `continue-on-error: true`, so it never blocks. Its `ENVIRONMENT MISMATCH` reports are informational. A body mismatch there is opened as an issue for investigation and **never** leads to a fixture update. Local check on Node 24.22.2 (npm 11.19.1, ICU 78.3, tzdata 2026e): all tests and the build passed, and all 3 bodies matched.

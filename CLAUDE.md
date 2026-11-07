@@ -25,6 +25,9 @@ To inspect a real chart instead of reasoning about engine output, run `npx tsx .
 - After every edit to a `.ts`/`.tsx` file, `tsc` runs.
 - When you stop with changes under `lib/ziwei/`, `scripts/regression/` or `package.json`, `npm test` runs.
 - Edits are blocked for generated files, `docs/tianji-ziwei/`, `package-lock.json` and `.env*`.
+- Edits in the main checkout are blocked. **Implementation and bug fixes happen in a git worktree:** start with `/start-work <type> <slug>` and finish with `/ship`. Details are in `.claude/rules/workflow.md` → Worktrees.
+
+Remotes: `origin` is the fork `thangnc/ziwei-doushu`, where PRs go; `upstream` is `Renhuai123/ziwei-doushu`.
 
 `next dev` on Next 16 rewrites `next-env.d.ts` and `tsconfig.json` (`jsx`, `.next/dev/types`). Don't commit those generated edits unless that's the point of the change.
 
@@ -56,7 +59,7 @@ To inspect a real chart instead of reasoning about engine output, run `npx tsx .
 ## Rules
 
 Detailed rules are in `.claude/rules/`. Most load only when Claude works on matching files.
-- `workflow.md` (always loaded): verifying before claiming done, one change per PR, commit style, privacy of birth data.
+- `workflow.md` (always loaded): verifying before claiming done, one change per PR, working in worktrees, commit and PR style, privacy of birth data.
 - `engine.md` (`lib/ziwei/**`): evidence required for any change to chart output, school options instead of hard-coded fixes, engine invariants.
 - `regression-tests.md` (`scripts/regression/**`, `package.json`): test house style and registration.
 - `demo-ui.md` (`app/**`, `components/**`): no backend, no `server-only` modules in client components.

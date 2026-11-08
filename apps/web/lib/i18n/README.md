@@ -40,6 +40,8 @@ presentTerm(locale, 'star', '咸池');             // { text: 'Hàm Trì', statu
 ganzhiText(locale, palace.stem, palace.branch);  // 'Giáp Tý' / '甲子'
 ```
 
+- Render a term with `<Term term={…} />` (`components/Term.tsx`): plain text when settled, dotted underline plus a tooltip (Chinese identifier and audit status) when provisional.
+- `/chart` is localized (Phase 2): page, `BirthForm`, `TimeNav`, `ChartBoard`, `PalaceCell` and the visible parts of `InsightPanel`. The AI prompts in `InsightPanel` stay Chinese until Phase 5. `npm test` (`i18n-no-cjk`) fails on Chinese written directly in the JSX of a localized file; add each newly localized file to its list.
 - Display rule (`docs/decisions/localization.md` D-9): Verified rows show the conventional Vietnamese term; Disputed and Unverified rows show the Hán-Việt reading with `provisional: true`, which the UI marks with a dotted underline and a tooltip.
 - Don't edit `terms-data.ts` by hand to "improve" a term. `npm test` (`i18n-terms-coverage`) checks every entry against the audit. To settle a term, record a decision and list it in `DECIDED_TERMS`.
 - `vi-presentation-baseline` pins the Vietnamese board text of 96 synthetic charts. After an intended term change, run `npx tsx apps/web/test/fixtures/generate-vi-presentation-baseline.ts --write` and review the fixture diff.

@@ -1,11 +1,15 @@
 'use client';
 import { motion } from 'framer-motion';
 import type { Palace, Star } from '@ziwei/engine/types';
-import { STEMS, BRANCHES } from '@ziwei/engine/constants';
 import clsx from 'clsx';
+import { useLocale } from '@/components/LocaleProvider';
+import Term from '@/components/Term';
+import { presentTerm, type PresentedPalace, type PresentedStar } from '@/lib/i18n/terms';
 
 interface PalaceCellProps {
   palace: Palace;
+  /** Display terms for this palace (`presentChart(chart, locale).palaces`); engine data stays in `palace`. */
+  presented: PresentedPalace;
   onClick?: () => void;
   onStarClick?: (star: Star) => void;
   isSelected?: boolean;
@@ -37,6 +41,7 @@ const SiHuaBadge = ({
   label?: string;
   onClick?: (e: React.MouseEvent) => void;
 }) => {
+  const { locale } = useLocale();
   return (
     <span
       className={clsx(
@@ -48,17 +53,20 @@ const SiHuaBadge = ({
       onClick={onClick}
     >
       {overlay && label && <span className="mr-px opacity-70">{label}</span>}
-      {siHua}
+      <Term term={presentTerm(locale, 'sihua', siHua)} />
     </span>
   );
 };
 
 export default function PalaceCell({
-  palace, onClick, onStarClick, isSelected, isSanFang, delay = 0,
+  palace, presented, onClick, onStarClick, isSelected, isSanFang, delay = 0,
   overlayStarSiHua, overlayLabel, onSiHuaClick,
 }: PalaceCellProps) {
-  const { branch, stem, name, stars, daXianAge, isCurrentDaXian, isMingGong, isShenGong } = palace;
-  const ganzhi = `${STEMS[stem]}${BRANCHES[branch]}`;
+  const { locale, t } = useLocale();
+  const { stars, daXianAge, isCurrentDaXian, isMingGong, isShenGong } = palace;
+  // presentChart maps palace.stars one to one, in order.
+  const shown = new Map<string, PresentedStar>(presented.stars.map(s => [s.id, s]));
+  const starTerm = (s: Star) => shown.get(s.name)?.name ?? presentTerm(locale, 'star', s.name);
 
   const majorStars = stars.filter(s => s.type === 'major');
   const luckyStars = stars.filter(s => s.type === 'lucky');
@@ -110,23 +118,25 @@ export default function PalaceCell({
         )}
           style={!isMingGong && !isShenGong ? { color: 'var(--t-faint)' } : undefined}
         >
-          {name}
+          <Term term={presented.name} />
         </span>
         {isMingGong && (
-          <span className="text-[7px] text-amber-500/80 border border-amber-500/30 px-0.5 rounded leading-tight">命</span>
+          <span className="text-[7px] text-amber-500/80 border border-amber-500/30 px-0.5 rounded leading-tight">{t('board.badgeMing')}</span>
         )}
         {isShenGong && (
-          <span className="text-[7px] text-sky-500/80 border border-sky-500/30 px-0.5 rounded leading-tight">身</span>
+          <span className="text-[7px] text-sky-500/80 border border-sky-500/30 px-0.5 rounded leading-tight">{t('board.badgeShen')}</span>
         )}
       </div>
 
       {/* 干支 */}
-      <div className="text-[9px] font-mono mb-1" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{ganzhi}</div>
+      <div className="text-[9px] font-mono mb-1" style={{ color: 'var(--t-faint)', opacity: 0.75 }}>{presented.ganzhi}</div>
 
       {/* 主星 */}
       <div className="flex flex-col gap-0.5 flex-1">
         {majorStars.length === 0 && (
-          <span className="text-[10px] italic" style={{ color: 'var(--t-faint)', opacity: 0.6 }}>空宫</span>
+          <span className="text-[10px] italic" style={{ color: 'var(--t-faint)', opacity: 0.6 }}>
+            <Term term={presentTerm(locale, 'mingGongNature', '空宫')} />
+          </span>
         )}
         {majorStars.map((star) => {
           const overlaySiHua = overlayStarSiHua?.[star.name];
@@ -140,7 +150,7 @@ export default function PalaceCell({
                 'text-[13px] leading-tight font-bold tracking-tight cursor-pointer hover:brightness-125 transition-all',
                 star.brightness === 'bright' ? 'text-amber-300' : star.brightness === 'dim' ? 'text-amber-700/80' : 'text-amber-500',
               )}>
-                {star.name}
+                <Term term={starTerm(star)} />
               </span>
               {star.siHua && <SiHuaBadge siHua={star.siHua} />}
               {overlaySiHua && (
@@ -166,7 +176,7 @@ export default function PalaceCell({
             const overlaySiHua = overlayStarSiHua?.[s.name];
             return (
               <span key={s.name} className="inline-flex items-center text-[9px] text-sky-500/70 leading-tight">
-                {s.name}
+                <Term term={starTerm(s)} />
                 {s.siHua && <SiHuaBadge siHua={s.siHua} />}
                 {overlaySiHua && (
                   <SiHuaBadge
@@ -190,7 +200,7 @@ export default function PalaceCell({
         <div className="flex flex-wrap gap-x-1">
           {shaStars.map(s => (
             <span key={s.name} className="text-[9px] text-red-500/60 leading-tight">
-              {s.name}{s.siHua && <SiHuaBadge siHua={s.siHua} />}
+              <Term term={starTerm(s)} />{s.siHua && <SiHuaBadge siHua={s.siHua} />}
             </span>
           ))}
         </div>
